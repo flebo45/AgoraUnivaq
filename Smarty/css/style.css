@@ -420,7 +420,7 @@ body { overflow-x: hidden }
     --n:1;
     overflow-y: hidden;
     height: 30vw;
-    max-height: 50vh;
+    max-height: 130vh;
     width: calc(var(--n)*100%);
 
 }
@@ -1174,31 +1174,30 @@ MEDIA QUERIES FOR BIG SCREENS
  */
 
  @media  screen and (min-width: 1200px) {
-
+/*  sets the width of the item with the class "container" to 96% of the width of its parent container*/
     .container {
         width: 96%;
     }
 
+/* divides the container into 3 columns with a space of 1.5 rem between them*/
     main .container {
         grid-template-columns: 15% auto 20% ;
         gap: 1.5rem;
     }
 
+/* set the maximum size relative to corresponding column*/
     .left {
         width: 100%;
         height: 100%;
     }
 
+/* set the maximum width and set the font size of the profile box at 16 px*/
     main .container .left .profile {
         width: 100%;
         font-size: 16px;
     }
 
-    main .container .left .profile .photo{
-        width: 100%;
-        height: 100%;
-    }
-
+/*does not scroll the left column */
     main .container .left {
         position: -webkit-sticky;
         top:75px;
@@ -1207,22 +1206,21 @@ MEDIA QUERIES FOR BIG SCREENS
 
           /*MODIFY REPORT*/
 
+/* set the width of the report card at 80%*/
 .report .card{
     width:80%;
 }
 
-.report .text-area {
-
-   margin-left: -60%;
-   margin-right: -60%;
-}
 
       /* MODIFY PROFILE*/
-      .container .right .side-profile .heading{
-        display: grid;
-        grid-template-columns: 1fr;
-      }
       
+/*puts items on a column*/
+.container .right .side-profile .heading{
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  
+
 
 }
 
@@ -1232,20 +1230,24 @@ MEDIA QUERIES FOR MEDIUM SCREENS (TABLET)
 -----------------------------------------------
 */
 @media screen and (min-width: 768px) and (max-width: 1199px) {
+ /*  sets the width of the item with the class "container" to 96% of the width of its parent container*/
     .container {
         width: 96%;
     }
 
+/* divides the container into 3 columns with a space of 1.5 rem between them*/
     main .container {
         grid-template-columns: 15% auto 20% ;
         gap: 1.5rem;
     }
 
+/* set the maximum size relative to corresponding column*/
     .left {
         width: 100%;
         height: 100%;
     }
 
+/* set the maximum width and set the font size of the profile box at 14 px*/
     main .container .left .profile {
         width: 100%;
         font-size:14px;
@@ -1256,59 +1258,57 @@ MEDIA QUERIES FOR MEDIUM SCREENS (TABLET)
         height: 100%;
     }
 
+/*does not scroll the left column */
     main .container .left {
         position: -webkit-sticky;
         top:75px;
     }
     
 
-
-
-    .customize-theme .card {
-        width: 80%;
-        height: 100%;
-    }
-
      /*MODIFY SETTINGS */
-    
+/* divides the container into 3 columns*/
      .bigContainer .container{
         grid-template-columns: 10% 30% ;
     }
 
+/*give a minimum width to the left column*/
     .bigContainer .container .left.left {
         width: 100%;
         height: 100%;
     min-width: 140%;
     }
 
+    /*remove the create post button*/
     .bigContainer .container .left .btn-primary{
         display: none;
     }
 
+    /* give the dimension of the profile photo*/
     .bigContainer .container .box-setting .profile-photo {
         height: 35%;
         width: 35%;
     }
 
+/*give the dimension of the box setting input and It will be moved to the left from its default placement of 10% of the width of its parent container.*/
 .bigContainer .container .box-setting input{
-    width: 300%; /* Larghezza del riquadro interno al 50% di quello esterno */
-  height: 60%; /* Altezza del riquadro interno al 50% di quello esterno */
-  left:10%; /* Sposta il riquadro interno verso il centro in orizzontale */
+    width: 300%; 
+  height: 60%; 
+  left:10%; 
 }
 
+/*change img-btn*/
 .custom-btn{
-    white-space: nowrap; 
-overflow: hidden;
-width: fit-content;
+    white-space: nowrap; /* Prevents automatic word division */
+overflow: hidden;/* Hides any content that comes out of the width of the button */
+width: fit-content;/*Sets the width of an element to automatically fit the content within it.*/
 }
 
 .conte{
-white-space: nowrap;
+white-space: nowrap; /*Text within the element should not wrap when it reaches the end of its width*/
 justify-content: flex-start;
-
 }
 
-
+/*Move up the Save button*/
 .conte .btn-primary{
     position: relative;
     top: -10px;
@@ -1317,42 +1317,49 @@ justify-content: flex-start;
 /*MODIFY CREATION POST*/
 
 
-
+/*set the box of the creation post*/
 .form-box:last-child{
     margin-left: 10%;
     margin-right: 10%;
     width: auto; 
     height: auto;
     }
-    
+
+/*divides into two column the container*/   
     .container_crea .container{
         grid-template-columns: 10% 82% ;
     }
 
+/* give the min width to the left column*/
     .container_crea .container .left{
     min-width: 180%;
     }
     
+/*give the margin to the button*/
     .form-box .btn {
     
         margin-left: 80%;
       }
-    
+
+/*give the width to the select-img button*/   
       .form-box .custom-btn{
         width:33%
       }
-    
+
+/*set the text area of the body*/     
       .text-area{
         width: 80%; 
       height: 60%;
       }
-     
+ /*set the text area of the title*/       
       .text{
         width: 80%; 
         height: 60%;
       }
 
       /* MODIFY PROFILE*/
+
+/*puts items on a column*/
       .container .right .side-profile .heading{
         display: grid;
         grid-template-columns: 1fr;
@@ -1366,12 +1373,45 @@ justify-content: flex-start;
     width:80%;
 }
 
+/* set the margin of the text area of the report*/
 .report .text-area {
-    width: 60%; 
-    height: 60%; 
-   margin-left: -60%;
-   margin-right: -60%;
+
+    margin-left: -40%;
+    margin-right: -40%;
+ }
+
+   /*MODIFY CUSTOMIZE*/
+
+   .customize-theme .card {
+    justify-content: center; 
+    width:70%;
+    height: 90%;
+  }
+
+  .customize-theme .choose-bg {
+    gap: 1rem;
+  }
+
+  .customize-theme .choose-bg .bg-1 {
+    overflow: hidden; 
+    text-overflow: ellipsis; 
 }
+
+
+.customize-theme .choose-bg .bg-2 {
+ 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+}
+
+
+.customize-theme .choose-bg .bg-3 {
+
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+}
+
+
 
 }
 
@@ -1404,7 +1444,7 @@ MEDIA QUERIES FOR SMALL SCREENS (PHONE)
    main .container .left {
     
     position: -webkit-sticky;
-    position: sticky;
+    position: sticky;                         /*does not scroll the left column */
     top: 50px;
 
 }
@@ -1438,9 +1478,9 @@ MEDIA QUERIES FOR SMALL SCREENS (PHONE)
     }
 
 .bigContainer .container .box-setting input{
-    width: 300%; /* Larghezza del riquadro interno al 50% di quello esterno */
-  height: 60%; /* Altezza del riquadro interno al 50% di quello esterno */
-  left:10%; /* Sposta il riquadro interno verso il centro in orizzontale */
+    width: 300%; 
+  height: 60%; 
+  left:10%; 
 }
 
 .custom-btn{
@@ -1503,31 +1543,29 @@ height: auto;
   }
 
   .customize-theme .choose-bg {
-    width: 60%; 
-    height: 10%;
     gap: 1rem;
   }
 
   .customize-theme .choose-bg .bg-1 {
     background:white;
     color: black;
-    white-space: nowrap; /* Impedisce la divisione automatica delle parole */
-    overflow: hidden; /* Nasconde qualsiasi contenuto che fuoriesce dalla larghezza del bottone */
-    text-overflow: ellipsis; /* Aggiunge un puntini di sospensione (...) al testo che viene tagliato */
+
+    overflow: hidden; 
+    text-overflow: ellipsis; 
 }
 
 
 .customize-theme .choose-bg .bg-2 {
-    white-space: nowrap; /* Impedisce la divisione automatica delle parole */
-    overflow: hidden; /* Nasconde qualsiasi contenuto che fuoriesce dalla larghezza del bottone */
-    text-overflow: ellipsis; /* Aggiunge un puntini di sospensione (...) al testo che viene tagliato */
+ 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
 }
 
 
 .customize-theme .choose-bg .bg-3 {
-    white-space: nowrap; /* Impedisce la divisione automatica delle parole */
-    overflow: hidden; /* Nasconde qualsiasi contenuto che fuoriesce dalla larghezza del bottone */
-    text-overflow: ellipsis; /* Aggiunge un puntini di sospensione (...) al testo che viene tagliato */
+
+    overflow: hidden; 
+    text-overflow: ellipsis; 
 }
 
 /* MODIFY PROFILE*/
@@ -1539,16 +1577,15 @@ height: auto;
     
     .container_pr .middle {
         display: flex;
-        flex-direction: row; /* Imposta la direzione del layout su orizzontale */
+        flex-direction: row; /* Set layout direction to horizontal */
     }
     
     .container_pr .container .right .side-profile  {
-        order: 1; /* Imposta l'ordine del contenitore "left" in modo che venga visualizzato dopo "middle" */
-        /* Altri stili per il contenitore "left" */
+        order: 1;
     }
     
     .container_pr .container .middle {
-        order: 2; /* Imposta l'ordine del contenitore "middle" in modo che venga visualizzato prima di "left" */
+        order: 2; 
         margin-left: 145%;
         margin-right:-780%;
        
@@ -1571,16 +1608,15 @@ height: auto;
     
     .container_vi .middle {
         display: flex;
-        flex-direction: row; /* Imposta la direzione del layout su orizzontale */
+        flex-direction: row; /* Set layout direction to horizontal */
     }
     
     .container_vi .container .right .side-profile  {
-        order: 1; /* Imposta l'ordine del contenitore "left" in modo che venga visualizzato dopo "middle" */
-        /* Altri stili per il contenitore "left" */
-    }
+        order: 1;
+       }
     
     .container_vi .container .middle {
-        order: 2; /* Imposta l'ordine del contenitore "middle" in modo che venga visualizzato prima di "left" */
+        order: 2; 
         margin-left: 145%;
         margin-right:-400%;
     
@@ -1601,8 +1637,8 @@ height: auto;
 .report .text-area {
     width: 60%; 
     height: 60%; 
-   margin-left: -60%;
-   margin-right: -60%;
+   margin-left: -40%;
+   margin-right: -40%;
 }
 
 

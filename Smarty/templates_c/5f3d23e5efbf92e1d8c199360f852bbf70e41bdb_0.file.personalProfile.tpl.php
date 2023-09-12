@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2023-09-11 18:38:17
+/* Smarty version 3.1.33, created on 2023-09-12 19:28:36
   from 'C:\xampp\htdocs\Agora\Smarty\templates\personalProfile.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_64ff4279bf72b0_81676085',
+  'unifunc' => 'content_65009fc4ca3443_28823747',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '5f3d23e5efbf92e1d8c199360f852bbf70e41bdb' => 
     array (
       0 => 'C:\\xampp\\htdocs\\Agora\\Smarty\\templates\\personalProfile.tpl',
-      1 => 1694450295,
+      1 => 1694450307,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_64ff4279bf72b0_81676085 (Smarty_Internal_Template $_smarty_tpl) {
+function content_65009fc4ca3443_28823747 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -240,7 +240,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
                   <div class="profile-photo">
                       <img src="data:<?php echo $_smarty_tpl->tpl_vars['userPic']->value->getType();?>
 ;base64,<?php echo $_smarty_tpl->tpl_vars['userPic']->value->getEncodedData();?>
-?unique_id=<?php echo 43;?>
+?rand=<?php echo rand();?>
 " alt="Img">
                   </div>
               <?php } else { ?>

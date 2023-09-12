@@ -229,6 +229,17 @@ public static function visit($idPost)
 
             
             $comments = $pm::getCommentList($post->getId());
+            if(count($comments) > 0)
+                {
+                    $commentsPic = array();
+                    foreach($comments as $c)
+                    {
+                        $commentsPic[$c->getUser()->getId()] = $pm::retriveObj(EImage::getEntity(), $c->getUser()->getIdImage());
+                    }
+                }else{
+                    $commentsPic = null;
+                }
+
             $like = $pm::retriveLike($userId, $idPost);
                 if($like !== null)
                 {
@@ -246,7 +257,7 @@ public static function visit($idPost)
 
             $view = new VManagePost();
                 
-            $view->showPost($user, $userPic, $visitedUserPic, $post, $comments, $numbLike, $followedNumb, $followerNumb,  $checkLike,  $followCheck);
+            $view->showPost($user, $userPic, $visitedUserPic, $post, $comments, $commentsPic, $numbLike, $followedNumb, $followerNumb,  $checkLike,  $followCheck);
         }
     }
 }
