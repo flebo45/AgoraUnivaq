@@ -5,11 +5,13 @@ Agorà is a Social Network, in which users can share their experience, mood, hob
 
 Installation on local server
 
-## -Requirements:
+## Requirements
+-Requirements:
     1. Install xampp [XAMPP Download](https://www.apachefriends.org/it/download.html) on your machine (inlcluding php)
     2. Install composer [Composer Downlaod](https://getcomposer.org/download/) on your machine
 
-## -Installation Guide:
+## Installation Guide
+-Installation:
     1. Download the git repository;
     2. Move the repositoy under `htdocs/` folder in Xampp and rename the folder `Agora`
 
@@ -19,9 +21,9 @@ Installation on local server
 
     5. On Xampp (you can use phpmyadmin) create a new empty database
 
-    1. In the application you can find a folder called `config`, in this foler locate a file called `config.php` and change the parameters according to your xampp and mysql settings
+    6. In the application you can find a folder called `config`, in this foler locate a file called `config.php` and change the parameters according to your xampp and mysql settings
 
-    1. Now it's all setup, you only need to create the database tables running `vendor/bin/doctrine orm:schema-tool:create`
+    7. Now it's all setup, you only need to create the database tables running `vendor/bin/doctrine orm:schema-tool:create`
 
-    1. Open your browser and digit in the URL `localhost/Agora` and enjoy the application
+    8. Open your browser and digit in the URL `localhost/Agora` and enjoy the application
 
