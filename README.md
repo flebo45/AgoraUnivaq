@@ -13,7 +13,7 @@ Installation on local server
 1. Download the git repository;
 1. Move the repositoy under `htdocs/` folder in Xampp and rename the folder `Agora`
 
-1. Now you need to install [Doctrine ORM](https://www.doctrine-project.org/), to do that you need to open terminal in the folder of your application (that will be in `xampp/htdocs`) and run  `composer install`
+1. Now you need to install ([Doctrine ORM](https://www.doctrine-project.org/)), to do that you need to open terminal in the folder of your application (that will be in `xampp/htdocs`) and run  `composer install`
 
 1. Once you installed Doctrine Orm, you need to modify some source code in `vendor/` folder; in `/vendor/doctrine/orm/lib/Doctrine/ORM/Configuration.php` at line 150 (approximately) you need to change the `$simpleAnnotationReader` to `false` in the parameter of the function, and delete all references to the SimpleAnnotation Reader in the function
 
@@ -24,4 +24,10 @@ Installation on local server
 1. Now it's all setup, you only need to create the database tables running `vendor/bin/doctrine orm:schema-tool:create`
 
 1. Open your browser and digit in the URL `localhost/Agora` and enjoy the application
+
+### Our Development team
+* [flebo45](https://github.com/flebo45)
+* [Marththt](https://github.com/Marththt)
+* [SilviaMastracci](https://github.com/SilviaMastracci)
+* [Emanchi](https://github.com/Emanchi)
 
