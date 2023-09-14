@@ -101,7 +101,7 @@
     {else}
       <div class="right">
       
-    {foreach $searchedUser as $user}
+      {foreach $searchedUser as $user}
     <div style="padding:1rem">  
       <div class="list-profile">
           
@@ -116,7 +116,7 @@
               </div>
             {/if}
             <div class ="handle">
-            {if $post->getUser()->isVip()}
+            {if $user->isVip()}
               <a  href="/Agora/User/profile/{$user->getUsername()}" class="vip"> {$user->getUsername()}</a> <i class='uil uil-star vip'></i>
           {else}
               <a  href="/Agora/User/profile/{$user->getUsername()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$user->getUsername()}</a>
