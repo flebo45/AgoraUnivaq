@@ -44,15 +44,15 @@ public static function createPost(){
             $user = $pm::retriveObj(EUser::getEntity(), $userId);
 
             //create new Post Obj and upload it in the db 
-            $post = new EPost($_POST['title'], $_POST['description'], $_POST['category']);
+            $post = new EPost(UHTTPMethods::post('title'), UHTTPMethods::post('description'), UHTTPMethods::post('category'));  //TODO
             $post->setUser($user);
             $pm::uploadObj($post);
 
             //file check for the images uploaded
-            $check = $_FILES['imageFile']['size'][0];
+            $check = UHTTPMethods::files('imageFile','size',0);                                       //TODO
             //var_dump($check);
             if($check > 0){
-                $uploadedImages = $_FILES['imageFile'];
+                $uploadedImages = UHTTPMethods::files('imageFile');
                 foreach($uploadedImages['tmp_name'] as $index => $tmpName){
                     $file = [
                         'name' => $uploadedImages['name'][$index],
@@ -212,7 +212,7 @@ public static function visit($idPost)
             $user = $pm::retriveObj(EUser::getEntity(), $userId);
 
             //create new Comment and upload it 
-            $comment = new EComment($_POST['body'], $user, $idPost);
+            $comment = new EComment(UHTTPMethods::post('body'), $user, $idPost);              //TODO
             $pm::uploadObj($comment);
 
             $userPic = $pm::retriveObj(EImage::getEntity(), $user->getIdImage());
@@ -278,7 +278,7 @@ public static function report($idPost){
             if($reportedPost !== null)
             {
                 //create a new Report Obj and persist it
-                $report = new EReport($_POST['description'], $_POST['type'], $idUser);
+                $report = new EReport(UHTTPMethods::post('description'), UHTTPMethods::post('type'), $idUser);          //TODO
                 $pm::uploadObj($report);
                 $report->setPost($reportedPost);
                 $pm::uploadObj($report);

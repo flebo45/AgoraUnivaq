@@ -52,10 +52,10 @@ class CModerator{
         if(UServer::getRequestMethod() != 'GET'){
             $pm = FPersistentManager::getInstance();
             $view = new VModerator();
-            $username = $pm::verifyUserUsername($_POST['username']);
+            $username = $pm::verifyUserUsername(UHTTPMethods::post('username'));                //TODO
             if($username){
-                $user = $pm::retriveModOnUsername($_POST['username']);
-                if(password_verify($_POST['password'], $user->getPassword())){
+                $user = $pm::retriveModOnUsername(UHTTPMethods::post('username'));
+                if(password_verify(UHTTPMethods::post('password'), $user->getPassword())){
                     if(USession::getSessionStatus() == PHP_SESSION_NONE){
                         USession::getInstance();
                         USession::setSessionElement('mod', $user->getId());

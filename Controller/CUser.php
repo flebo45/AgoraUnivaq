@@ -60,12 +60,12 @@ class CUser{
     public static function checkRegistration()
     {
         $pm = FPersistentManager::getInstance();
-        $email = $pm::verifyUserEmail($_POST['email']);
+        $email = $pm::verifyUserEmail(UHTTPMethods::post('email'));                                             //TODO
         $view = new VUser();
         if($email == false){
-            $username = $pm::verifyUserUsername($_POST['username']);
+            $username = $pm::verifyUserUsername(UHTTPMethods::post('username'));
             if($username == false){
-                $user = new EUser($_POST['name'], $_POST['surname'],$_POST['age'], $_POST['email'],$_POST['password'],$_POST['username']);
+                $user = new EUser(UHTTPMethods::post('name'), UHTTPMethods::post('surname'),UHTTPMethods::post('age'), UHTTPMethods::post('email'),UHTTPMethods::post('password'),UHTTPMethods::post('username'));
                 $pm::uploadObj($user);
                 if($pm::retriveObj(EImage::getEntity(), 1) != null){
                     $user->setIdImage(1);
@@ -116,10 +116,10 @@ class CUser{
         if(UServer::getRequestMethod() != 'GET'){
             $pm = FPersistentManager::getInstance();
             $view = new VUser();
-            $username = $pm::verifyUserUsername($_POST['username']);
+            $username = $pm::verifyUserUsername(UHTTPMethods::post('username'));                                            //TODO
             if($username){
-                $user = $pm::retriveUserOnUsername($_POST['username']);
-                if(password_verify($_POST['password'], $user->getPassword())){
+                $user = $pm::retriveUserOnUsername(UHTTPMethods::post('username'));
+                if(password_verify(UHTTPMethods::post('password'), $user->getPassword())){
                     if($user->isBanned()){
                         $view->loginBan();
                     }
@@ -353,21 +353,21 @@ class CUser{
                 //param 1 Credential form (bio, hobby ecc)
                 if($param == 1)
                 {
-                    $user->setBio($_POST['Bio']);
-                    $user->setWorking($_POST['Working']);
-                    $user->setStudiedAt($_POST['StudiedAt']);
-                    $user->setHobby($_POST['Hobby']);
+                    $user->setBio(UHTTPMethods::post('Bio'));
+                    $user->setWorking(UHTTPMethods::post('Working'));                                               //TODO
+                    $user->setStudiedAt(UHTTPMethods::post('StudiedAt'));
+                    $user->setHobby(UHTTPMethods::post('Hobby'));
                     $pm::uploadObj($user);
                     header('Location: /Agora/User/personalProfile');
                 //param 2 Username
                 }elseif($param == 2)
                 {
-                    if($user->getUsername() == $_POST['username']){
+                    if($user->getUsername() == UHTTPMethods::post('username')){
                         header('Location: /Agora/User/personalProfile');
                     }else{
-                        if($pm::verifyUserUsername($_POST['username']) == false)
+                        if($pm::verifyUserUsername(UHTTPMethods::post('username')) == false)
                         {
-                            $user->setUsername($_POST['username']);
+                            $user->setUsername(UHTTPMethods::post('username'));
                             $pm::uploadObj($user);
                             header('Location: /Agora/User/personalProfile');
                         }else{
@@ -387,16 +387,16 @@ class CUser{
                 //param 3 Password
                 }elseif($param == 3)
                 {
-                    $newPass = $_POST['password'];
+                    $newPass = UHTTPMethods::post('password');
                     $user->setPassword($newPass);
                     $pm::uploadObj($user);
                     header('Location: /Agora/User/personalProfile');
                 //param 4 ProPic
                 }elseif($param == 4)
                 {
-                    if($_FILES['imageFile']['size'] > 0)
+                    if(UHTTPMethods::files('imageFile','size') > 0)
                     {
-                        $uploadedImage = $_FILES['imageFile'];
+                        $uploadedImage = UHTTPMethods::files('imageFile');
                         $checkUploadImage = self::uploadImage($uploadedImage);
                         if($checkUploadImage == 'UPLOAD_ERROR_OK' || $checkUploadImage == 'TYPE_ERROR' || $checkUploadImage == 'SIZE_ERROR'){
 

@@ -14,9 +14,9 @@ class CSearch{
                 $pm = FPersistentManager::getInstance();
 
                 //list of Posts 'title LIKE keyword'
-                $searchedPosts = $pm::getSerachedPosts($_POST['keyword']);
+                $searchedPosts = $pm::getSerachedPosts(UHTTPMethods::post('keyword'));             //TODO
                 //list of Users 'username LIKE keyword'
-                $searchedUsers = $pm::getSearchedUsers($_POST['keyword']);
+                $searchedUsers = $pm::getSearchedUsers(UHTTPMethods::post('keyword'));
 
                 //load the Users profile Image 
                 $postUserPic = array();
@@ -38,7 +38,7 @@ class CSearch{
                 }
 
                 $view = new VSearch();
-                $view->showSearch($_POST['keyword'], $searchedPosts, $postUserPic, $searchedUsers, $userPic);
+                $view->showSearch(UHTTPMethods::post('keyword'), $searchedPosts, $postUserPic, $searchedUsers, $userPic);        //TODO
             }else{
                 header('Location: /Agora/User/login');
             }
