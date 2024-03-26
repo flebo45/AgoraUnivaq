@@ -1,12 +1,33 @@
+![Agora Logo](Smarty/immagini/2.png)
+
 # Agora - The Social Netwok
 
-This is our Web Application for "Programmazione Web" (Web programming) Exam for Univaq.
+![Agora Homepage](Smarty/immagini/AgoraHomepage.png)
 
-Agorà is a Social Network, in which users can share their experience, mood, hobby, thoughts and much more. Every user can create Post and enrich it with photos. But as everythings in the life, there is competition: Top 3 Users (users with the most follower) will be VIP Users.
+# Table of Contents
 
-Installation on local server
+1. [About](#about)
+1. [Key Feature](#key-feature)
+1. [Requirements](#requirements)
+1. [Installation Guide](#installation-guide)
+1. [Our Development Team](#our-development-team)
+
+## About
+
+Agora is a Web Application project for the "Web Programming" exam for Univaq(IT).
+
+Agora is a Social Network that utilizes PHP, Doctrine ORM and Smarty.
+This app would is intended as a project to lean how to design web applications, using the principles of the **MVC Pattern** and show the potential of our team in the engineering field.
+
+## Key Feature
+
+Agorà is a Social Network Web Application, in which users can share their experience, mood, hobby, thoughts and much more. Every user can create Post and enrich it with photos. But as everythings in the life, there is competition: Top 3 Users (users with the most follower) will be VIP Users.
+
+![Agora Profilepage](Smarty/immagini/AgoraProfile.png)
 
 ## Requirements
+
+Installation on local server requirements:
 
 1. Install xampp ([XAMPP Download](https://www.apachefriends.org/it/download.html)) on your machine (inlcluding php)
 1. Install composer ([Composer Downlaod](https://getcomposer.org/download/)) on your machine
