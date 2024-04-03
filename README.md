@@ -41,13 +41,9 @@ Installation on local server requirements:
 
 1. Once you installed Doctrine Orm, you need to modify some source code in `vendor/` folder; in `/vendor/doctrine/orm/lib/Doctrine/ORM/Configuration.php` at line 150 (approximately) you need to change the `$simpleAnnotationReader` to `false` in the parameter of that function, and delete all references to the SimpleAnnotation Reader in the function
 
-1. On Xampp (you can use phpmyadmin) create a new empty database
-
 1. In the application you can find a folder called `config`, in this folder locate a file called `config.php` and change the parameters according to your xampp and mysql settings
 
-1. Now it's all setup, you only need to create the database tables running `vendor/bin/doctrine orm:schema-tool:create` in the root folder of the application (`xampp/htdocs/Agora`)
-
-1. Open your browser and digit in the URL `localhost/Agora` and enjoy the application
+1. Now it's all setup open your browser and digit in the URL `localhost/Agora` and enjoy the application
 
 ### Our Development team
 
