@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2023-09-11 12:18:41
+/* Smarty version 3.1.33, created on 2024-04-14 12:32:30
   from 'C:\xampp\htdocs\Agora\Smarty\templates\UserProfileAdmin.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_64fee9812a90d7_62823775',
+  'unifunc' => 'content_661bb0bee49a76_65527265',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '06e57868809463e2803bb1f7c36fd1fccbaf7096' => 
     array (
       0 => 'C:\\xampp\\htdocs\\Agora\\Smarty\\templates\\UserProfileAdmin.tpl',
-      1 => 1694380152,
+      1 => 1713090748,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_64fee9812a90d7_62823775 (Smarty_Internal_Template $_smarty_tpl) {
+function content_661bb0bee49a76_65527265 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -174,29 +174,29 @@ foreach ($_from as $_smarty_tpl->tpl_vars['post']->value) {
                                 </div>
                                 <div class="ingo">
                                     <div>
-                                        <a style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold"><?php echo $_smarty_tpl->tpl_vars['post']->value->getTitle();?>
+                                        <a style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold"><?php echo $_smarty_tpl->tpl_vars['post']->value[0]->getTitle();?>
 </a>
                                     </div>
-                                    <small><?php echo $_smarty_tpl->tpl_vars['post']->value->getTime()->format('Y-m-d H:i:s');?>
+                                    <small><?php echo $_smarty_tpl->tpl_vars['post']->value[0]->getTime()->format('Y-m-d H:i:s');?>
 </small>
                                 </div>
                             </div>
-                            <div style="background: linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red);-webkit-background-clip: text;background-clip: text;color: transparent;font-weight: bold;"><?php echo $_smarty_tpl->tpl_vars['post']->value->getCategory();?>
+                            <div style="background: linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red);-webkit-background-clip: text;background-clip: text;color: transparent;font-weight: bold;"><?php echo $_smarty_tpl->tpl_vars['post']->value[0]->getCategory();?>
 </div>
                         </div>
                         <div class="caption ">
                             <!-- Smarty tag for username -->
-                            <p><b><?php echo $_smarty_tpl->tpl_vars['post']->value->getUser()->getUsername();?>
+                            <p><b><?php echo $_smarty_tpl->tpl_vars['post']->value[0]->getUser()->getUsername();?>
 </b><span class="harsh-tag">
-                        <?php echo $_smarty_tpl->tpl_vars['post']->value->getDescription();?>
+                        <?php echo $_smarty_tpl->tpl_vars['post']->value[0]->getDescription();?>
 </span></p>
                         </div>
-                        <?php if ($_smarty_tpl->tpl_vars['post']->value->getImages()->count() === 0) {?>
+                        <?php if (count($_smarty_tpl->tpl_vars['post']->value[0]->getImages()) === 0) {?>
 
                         <?php } else { ?>
                             <div class="photo">
                                 <?php
-$_from = $_smarty_tpl->smarty->ext->_foreach->init($_smarty_tpl, $_smarty_tpl->tpl_vars['post']->value->getImages(), 'i');
+$_from = $_smarty_tpl->smarty->ext->_foreach->init($_smarty_tpl, $_smarty_tpl->tpl_vars['post']->value[0]->getImages(), 'i');
 if ($_from !== null) {
 foreach ($_from as $_smarty_tpl->tpl_vars['i']->value) {
 ?>

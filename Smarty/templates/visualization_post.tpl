@@ -104,12 +104,12 @@
           <span> <i class="uil uil-palette"></i></span>Theme
       </label>
       <label class="menu-items tex-bold " >
-          <button class="btn-transparent" onclick="location.href='/Agora/User/settings/0'"><i class="uil uil-setting"></i> </button>Setting
+          <button class="btn-transparent" onclick="location.href='/Agora/User/settings'"><i class="uil uil-setting"></i> </button>Setting
       </label>
   </div>
   <!--------------------END OF SIDE BAR----------------->
   <label class="btn btn-primary">create post
-      <button class="btn-transparent" onclick="location.href='/Agora/Post/createPost'"></button>
+      <button class="btn-transparent" onclick="location.href='/Agora/Post/postForm'"></button>
   </label>
 </div>
 
@@ -144,7 +144,7 @@
             <p><b>{$post->getUser()->getUsername()}</b><span class="harsh-tag">
             {$post->getDescription()}</span></p>
         </div>
-        {if $post->getImages()->count() === 0}
+        {if count($post->getImages()) === 0}
             
           {else}
             <div class="photo">
@@ -179,7 +179,7 @@
             <span><img src="/Agora/Smarty/immagini/A.png" alt=""></span>
             {/for}
             <!-- Smarty tag for username --> 
-            <p> liked by <a href="/Agora/Post/like/{$post->getId()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$likeNumb} user</a> </p>
+            <p> liked by <a href="/Agora/Post/like/{$post->getId()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$numericInfo[0]} user</a> </p>
         </div>
 
           <div class="comments">
@@ -194,9 +194,9 @@
               <div class="comment">
                 <div class="head">
                   <div class="user">
-                  {if $commentsPic[$comment->getUser()->getId()]->getSize() > 0}
+                  {if $comment[1]->getSize() > 0}
                     <div class="profile-photo">  
-                        <img src="data:{$commentsPic[$comment->getUser()->getId()]->getType()};base64,{$commentsPic[$comment->getUser()->getId()]->getEncodedData()}" alt="Img">
+                        <img src="data:{$comment[1]->getType()};base64,{$comment[1]->getEncodedData()}" alt="Img">
                     </div>
                   {else}
                     <div class="profile-photo">
@@ -204,27 +204,27 @@
                     </div>
                   {/if}
                     <div class="ingo">
-                    {if $comment->getUser()->isVip()}
-                      <a href="/Agora/User/profile/{$comment->getUser()->getUsername()}"class="vip"> {$comment->getUser()->getUsername()}<i class='uil uil-star' style='font-size:medium'></i> </a>
+                    {if $comment[0]->getUser()->isVip()}
+                      <a href="/Agora/User/profile/{$comment[0]->getUser()->getUsername()}"class="vip"> {$comment[0]->getUser()->getUsername()}<i class='uil uil-star' style='font-size:medium'></i> </a>
                     {else}
-                      <a href="/Agora/User/profile/{$comment->getUser()->getUsername()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold"> {$comment->getUser()->getUsername()}</a>
+                      <a href="/Agora/User/profile/{$comment[0]->getUser()->getUsername()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold"> {$comment[0]->getUser()->getUsername()}</a>
                     {/if}
-                      <small>{$comment->getTime()->format('Y-m-d H:i:s')}</small>
+                      <small>{$comment[0]->getTime()->format('Y-m-d H:i:s')}</small>
                     </div>
                   </div>
 
                   <div class="body-comment">
-                    <b>{$comment->getBody()}</b>
+                    <b>{$comment[0]->getBody()}</b>
                   </div>
                 </div>
-                <form id="report" action="/Agora/Comment/report/{$comment->getId()}" method="post">
+                <form id="report" action="/Agora/Report/reportComment/{$comment[0]->getId()}" method="post">
                       <button class="btn btn-transparent" id="delete"><i class="uil uil-exclamation-triangle" style="color:red"></i></button>
                 </form>
               </div>
             {/foreach}
 
             <div class="send-comment">
-              <form id="comment-post"  action="/Agora/Post/visit/{$post->getId()}"  method="post">
+              <form id="comment-post"  action="/Agora/Comment/createComment/{$post->getId()}"  method="post">
               <label class="left-transition ">
                 <input type="text" name ='body'placeholder="write a comment" required>
               </label>
@@ -263,13 +263,13 @@
             <p class="text-muted">{$post->getUser()->getName()}</p>
           </div>
           <div>
-            <a href="/Agora/User/followed/{$post->getUser()->getId()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$followerNumb}</a>
+            <a href="/Agora/User/followed/{$post->getUser()->getId()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$numericInfo[1]}</a>
             <p class="text-muted">
               followers
             </p>
           </div>
           <div>
-          <a href="/Agora/User/followers/{$post->getUser()->getId()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$followedNumb}</a>
+          <a href="/Agora/User/followers/{$post->getUser()->getId()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$numericInfo[2]}</a>
             <p class="text-muted">following</p>
           </div>
         </div>
@@ -350,7 +350,7 @@
 <div class="card">
     <h2>Report</h2>
     <h3 class="text-muted">Why are you reporting this post?</h3>
-    <form id="report"  action="/Agora/Post/report/{$post->getId()}" method="post">
+    <form id="report"  action="/Agora/Report/reportPost/{$post->getId()}" method="post">
 
         <div class="report-checkbox">
             <input type="radio" required id="violence" name='type' value="violence">

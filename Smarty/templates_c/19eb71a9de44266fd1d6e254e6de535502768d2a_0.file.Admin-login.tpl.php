@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2023-09-11 12:16:46
+/* Smarty version 3.1.33, created on 2024-04-14 11:20:28
   from 'C:\xampp\htdocs\Agora\Smarty\templates\Admin-login.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_64fee90e823aa2_90848094',
+  'unifunc' => 'content_661b9fdceb4af8_41803309',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '19eb71a9de44266fd1d6e254e6de535502768d2a' => 
     array (
       0 => 'C:\\xampp\\htdocs\\Agora\\Smarty\\templates\\Admin-login.tpl',
-      1 => 1694380151,
+      1 => 1713086413,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_64fee90e823aa2_90848094 (Smarty_Internal_Template $_smarty_tpl) {
+function content_661b9fdceb4af8_41803309 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -63,7 +63,7 @@ function content_64fee90e823aa2_90848094 (Smarty_Internal_Template $_smarty_tpl)
                 wrong username or password, try again
             </div>
         <?php }?>
-        <form id="login" class="input-group" action="/Agora/Moderator/login" method="post">
+        <form id="login" class="input-group" action="/Agora/Moderator/checkLogin" method="post">
             <label>
                 <input type="text" class="input-field" placeholder="Enter Username" name="username" required>
             </label>

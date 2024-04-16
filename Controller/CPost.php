@@ -2,291 +2,96 @@
 
 class CPost{
 
-private static $allowedType = ['image/jpeg', 'image/png', 'image/jpg'];
-private static $maxSize = 5242880; //5MB
 
-public static function getAllowedType(){
-    return self::$allowedType;
-}
+/**
+ * show the page for the creation of a post
+ */
 
-public static function getMaxSize(){
-    return self::$maxSize;
+public static function postForm(){
+    if(CUser::isLogged()){
+        $pm = FPersistentManager::getInstance();
+        USession::getInstance();
+
+        $userId = USession::getSessionElement('user');
+        $userAndPropic = $pm::loadUsersAndImage($userId);
+
+        $view = new VManagePost();
+        $view->showCreationForm($userAndPropic);
+    }else{
+        header('Location: /Agora/User/login');
+    }
 }
 
 /**
- * check the request: if GET show the page for the creation of a post;
- * if POST start the process to create a new post 
+ * create a post taking info from the form and check if the uploaded images are ok
  */
 public static function createPost(){
-    if(UServer::getRequestMethod() == "GET")
-    {
-        if(CUser::isLogged())
-        {
-            $pm = FPersistentManager::getInstance();
-            USession::getInstance();
-            $userId = USession::getSessionElement('user');
-            $user = $pm::retriveObj(EUser::getEntity(), $userId);
-            $proPic = $pm::retriveObj(EImage::getEntity(), $user->getIdImage());
+    if(CUser::isLogged()){
+        $pm = FPersistentManager::getInstance();
+        USession::getInstance();
+        $view = new VManagePost();
 
-            $view = new VManagePost();
-            $view->showCreationForm($user, $proPic);
-        }else{
-            header('Location: /Agora/User/login');
-        }
-    }elseif(UServer::getRequestMethod() == "POST")
-    {
-        if(CUser::isLogged())
-        {
-            $view = new VManagePost();
-            $pm = FPersistentManager::getInstance();
-            USession::getInstance();
-            $userId = USession::getSessionElement('user');
-            $user = $pm::retriveObj(EUser::getEntity(), $userId);
+        $userId = USession::getSessionElement('user');
+        $user = $pm::retriveObj(EUser::getEntity(), $userId);
 
-            //create new Post Obj and upload it in the db 
-            $post = new EPost(UHTTPMethods::post('title'), UHTTPMethods::post('description'), UHTTPMethods::post('category'));  //TODO
-            $post->setUser($user);
-            $pm::uploadObj($post);
-
-            //file check for the images uploaded
-            $check = UHTTPMethods::files('imageFile','size',0);                                       //TODO
-            //var_dump($check);
-            if($check > 0){
-                $uploadedImages = UHTTPMethods::files('imageFile');
-                foreach($uploadedImages['tmp_name'] as $index => $tmpName){
-                    $file = [
-                        'name' => $uploadedImages['name'][$index],
-                        'type' => $uploadedImages['type'][$index],
-                        'size' => $uploadedImages['size'][$index],
-                        'tmp_name' => $tmpName,
-                        'error' => $uploadedImages['error'][$index]
-                    ];
-                    
-                    //check if the uploaded image is ok 
-                    $checkUploadImage = self::uploadImage($file, $post);
-                    if($checkUploadImage == 'UPLOAD_ERROR_OK'){
-                        $pm::deletePost($post);
-                        $view->uploadFileError('UPLOAD_ERROR_OK');
-                    }
-                    elseif($checkUploadImage == 'TYPE_ERROR'){
-                        $pm::deletePost($post);
-                        $view->uploadFileError('TYPE_ERROR');
-                    }
-                    elseif($checkUploadImage == 'SIZE_ERROR'){
-                        $pm::deletePost($post);
-                        $view->uploadFileError('SIZE_ERROR');
-                    }
-                    else{
-                        $pm::uploadImagePost($checkUploadImage, $post);
-                        header('Location: /Agora/User/personalProfile');
-                    } 
-                }
+        //create new Post Obj and upload it in the db 
+        $post = new EPost(UHTTPMethods::post('title'), UHTTPMethods::post('description'), UHTTPMethods::post('category')); 
+        $post->setUser($user);
+        $lastId = $pm::uploadObj($post);
+        $post->setId($lastId);
+        
+        //file check for the images uploaded
+        $check = UHTTPMethods::files('imageFile','size',0);                                       
+        //var_dump($check);
+        if($check > 0){
+            $uploadedImages = UHTTPMethods::files('imageFile');
+            $check = $pm::manageImages($uploadedImages, $post, $userId);
+            if(!$check){
+                $view->uploadFileError($check);
             }else{
                 header('Location: /Agora/User/personalProfile');
             }
         }else{
-            header('Location: /Agora/User/login');
+            header('Location: /Agora/User/personalProfile');
         }
     }else{
-        header('Location: /Agora/User/home');
-    }
-}
-
-/**
- * check if the uploaded image is ok and then create an Image Obj and save it in the database
- */
-public static function uploadImage($file, $post){
-    $check = self::validateImage($file);
-    if($check[0]){
-        
-        //create new Image Obj ad perist it
-        $image = new EImage($file['name'], $file['size'], $file['type'], file_get_contents($file['tmp_name']));
-        $post->addImage($image);
-        return $image;
-    }else{
-        return $check[1];
-    }
-}
-
-/**
- * check if the image is ok and in case return the error
- */
-public static function validateImage($file){
-    if($file['error'] !== UPLOAD_ERR_OK){
-        $error = 'UPLOAD_ERROR_OK';
-
-        return [false, $error];
+        header('Location: /Agora/User/login');
+        }
     }
 
-    if(!in_array($file['type'], self::getAllowedType())){
-        $error = 'TYPE_ERROR';
-
-        return [false, $error];
-    }
-
-    if($file['size'] > self::getMaxSize()){
-        $error = 'SIZE_ERROR';
-
-        return [false, $error];
-    }
-
-    return [true, null];
-}
 
 /**
  * show the page of a single post, with it's information and info about the creator
- * if Get show the post
- * if Post create a new Comment related to the Post 
+ * @param int $idPost Refers to the id of a post 
  */
-public static function visit($idPost)
-{
-    if(UServer::getRequestMethod() == 'GET')
-    {
-            $pm = FPersistentManager::getInstance();
-            $post = $pm::retriveObj(EPost::getEntity(), $idPost);
-            if($post !== NULL)
-            {
-                if(!CUser::isLogged()){
-                    $user = null;
-                    $userPic = null;
-                    $followCheck = false;
-                    $checkLike = false;
-                }else{
-                    USession::getInstance();
-                    $userId = USession::getSessionElement('user');
-                    $user = $pm::retriveObj(EUser::getEntity(), $userId);
 
-                    $userPic = $pm::retriveObj(EImage::getEntity(), $user->getIdImage());
+public static function visit($idPost){
+    $pm = FPersistentManager::getInstance();
+    $post = $pm::loadPostInVisited($idPost);
+    if(!is_array($post)){
+        $view = new VManagePost();
+        $visitedUserAndPic = $pm::loadUsersAndImage($post->getUser()->getId());
 
-                    $follow = $pm::retriveFollow($userId, $post->getUser()->getId());
+        $commentsAndUserPic = $pm::loadCommentsAndUsersPic($idPost);
 
-                    $like = $pm::retriveLike($userId, $idPost);
+        //array with: like number, follower number, followed number
+        $numericInfo = $pm::loadFollLikeNumb($post);
 
-                    if($like !== null)
-                    {
-                        $checkLike = true;
-                    }else{
-                        $checkLike = false;
-                    }
-
-                    if($follow !== null)
-                    {
-                        $followCheck = true;
-                    }else{
-                        $followCheck = false;
-                    }
-                }
-                $visitedUserPic = $pm::retriveObj(EImage::getEntity(), $post->getUser()->getIdImage());
-
-                $comments = $pm::getCommentList($post->getId());
-
-                if(count($comments) > 0)
-                {
-                    $commentsPic = array();
-                    foreach($comments as $c)
-                    {
-                        $commentsPic[$c->getUser()->getId()] = $pm::retriveObj(EImage::getEntity(), $c->getUser()->getIdImage());
-                    }
-                }else{
-                    $commentsPic = null;
-                }
-
-                $numbLike = $pm::getLikeNumber($idPost);
-                
-                $followerNumb = $pm::getFollowerNumb($post->getUser()->getId());
-                $followedNumb = $pm::getFollowedNumb($post->getUser()->getId());
-
-                
-                $view = new VManagePost();
-                
-                $view->showPost($user, $userPic, $visitedUserPic, $post, $comments, $commentsPic, $numbLike, $followedNumb, $followerNumb, $checkLike,  $followCheck);
-            }
-        }
-    elseif(UServer::getRequestMethod() == 'POST')
-    {
-        if(CUser::isLogged())
-        {
-            $pm = FPersistentManager::getInstance();
+        if(!CUser::isLogged()){
+            $userAndPropic = null;
+            $like = false;
+            $follow = false;
+        }else{
             USession::getInstance();
             $userId = USession::getSessionElement('user');
-            $user = $pm::retriveObj(EUser::getEntity(), $userId);
 
-            //create new Comment and upload it 
-            $comment = new EComment(UHTTPMethods::post('body'), $user, $idPost);              //TODO
-            $pm::uploadObj($comment);
-
-            $userPic = $pm::retriveObj(EImage::getEntity(), $user->getIdImage());
-
-            $post = $pm::retriveObj(EPost::getEntity(), $idPost);
-
-            $visitedUserPic = $pm::retriveObj(EImage::getEntity(), $post->getUser()->getIdImage());
-
-            $numbLike = $pm::getLikeNumber($idPost);
-
+            $userAndPropic = $pm::loadUsersAndImage($userId);
             $follow = $pm::retriveFollow($userId, $post->getUser()->getId());
-            $followerNumb = $pm::getFollowerNumb($post->getUser()->getId());
-            $followedNumb = $pm::getFollowedNumb($post->getUser()->getId());
-
-            
-            $comments = $pm::getCommentList($post->getId());
-            if(count($comments) > 0)
-                {
-                    $commentsPic = array();
-                    foreach($comments as $c)
-                    {
-                        $commentsPic[$c->getUser()->getId()] = $pm::retriveObj(EImage::getEntity(), $c->getUser()->getIdImage());
-                    }
-                }else{
-                    $commentsPic = null;
-                }
-
             $like = $pm::retriveLike($userId, $idPost);
-                if($like !== null)
-                {
-                    $checkLike = true;
-                }else{
-                    $checkLike = false;
-                }
-
-                if($follow !== null)
-                {
-                    $followCheck = true;
-                }else{
-                    $followCheck = false;
-                }
-
-            $view = new VManagePost();
-                
-            $view->showPost($user, $userPic, $visitedUserPic, $post, $comments, $commentsPic, $numbLike, $followedNumb, $followerNumb,  $checkLike,  $followCheck);
         }
-    }
-}
 
-/**
- * this method is called when a user report a Post 
- */
-public static function report($idPost){
-    if(UServer::getRequestMethod() == 'POST')
-    {
-        if(CUser::isLogged())
-        {
-            $pm = FPersistentManager::getInstance();
-            USession::getInstance();
-            $idUser = USession::getSessionElement('user');
+        $view->showPost($userAndPropic, $visitedUserAndPic, $post, $commentsAndUserPic, $numericInfo, $like,  $follow);
 
-            $reportedPost = $pm::retriveObj(EPost::getEntity(), $idPost);
-            if($reportedPost !== null)
-            {
-                //create a new Report Obj and persist it
-                $report = new EReport(UHTTPMethods::post('description'), UHTTPMethods::post('type'), $idUser);          //TODO
-                $pm::uploadObj($report);
-                $report->setPost($reportedPost);
-                $pm::uploadObj($report);
-            }
-            header('Location: /Agora/User/home');
-        }else{
-            header('Location: /Agora/User/login');
-        }
     }else{
         header('Location: /Agora/User/home');
     }
@@ -294,130 +99,90 @@ public static function report($idPost){
 
 /**
  * show the list of the Users who liked the Post
+ * @param int $idPost Refers to the id of a post 
  */
 public static function like($idPost)
 {
-    if(UServer::getRequestMethod() == 'GET')
-    {
-        if(CUser::isLogged())
-        {
-            $pm = FPersistentManager::getInstance();
-            $usersLikeList = $pm::getLikesUserOfAPost($idPost);
-            
-            $usersPic = array();
-            foreach($usersLikeList as $u)
-            {
-                $pic = $pm::retriveObj(EImage::getEntity(), $u->getIdImage());
-                //associative array, save the Users pic 
-                $usersPic[$u->getId()] = $pic;
-            }
+    if(CUser::isLogged()){
+        $pm = FPersistentManager::getInstance();
+        $usersAndPropic = $pm::getLikesPage($idPost);
 
-            $view = new VManagePost();
-            $view->showUsersList($usersLikeList, $usersPic, 'like');
-        }else{
-            header('Location: /Agora/User/login');
-        }
+        $view = new VManagePost();
+        $view->showUsersList($usersAndPropic, 'like');
     }else{
-        header('Location: /Agora/User/home');
+        header('Location: /Agora/User/login');
     }
 }
 
 /**
  * this method is called when a User want to delete a Post 
+ * @param int $idPost Refers to the id of a post 
  */
 public static function delete($idPost)
 {
-    if(UServer::getRequestMethod() == 'GET')
-    {
-        if(CUser::isLogged())
-        {
-            $pm = FPersistentManager::getInstance();
-            USession::getInstance();
-            $idUser = USession::getSessionElement('user');
+    if(CUser::isLogged()){
+        $pm = FPersistentManager::getInstance();
+        USession::getInstance();
+        $idUser = USession::getSessionElement('user');
 
-            $post = $pm::retriveObj(EPost::getEntity(), $idPost);
+        $post = $pm::getPostAndUser($idPost);
+    
 
-            //check if the Post exist
-            if($post !== null)
-            {
-                //check if the Logged User is the owner of the Post
-                if($idUser == $post->getUser()->getId() && $post !== null)
-                {
-                    $pm::deletePost($post);
-
-                    header('Location: /Agora/User/personalProfile');
-                }else{
-                    header('Location: /Agora/User/home');
-                }
-            }else{
-                header('Location: /Agora/User/personalProfile');
-            }
-
-            
+        //check if the Post exist
+        if(count($post) > 0  && $idUser == $post[0]->getUser()->getId()){
+            $pm::deletePost($idPost, $idUser);
+            header('Location: /Agora/User/personalProfile');
         }else{
-            header('Location: /Agora/User/login');
-        }
+            header('Location: /Agora/User/personalProfile');
+        }        
     }else{
-        header('Location: /Agora/User/home');
+        header('Location: /Agora/User/login');
     }
 }
 
 /**
  * this method is called when the User want to like the Post that is visualizing 
+ * @param int $idPost Refers to the id of a post 
  */
 public static function settingLike($idPost)
 {
-    if(UServer::getRequestMethod() == "POST")
-    {
-        if(CUser::isLogged())
-        {
-            $pm = FPersistentManager::getInstance();
-            USession::getInstance();
-            $idUser = USession::getSessionElement('user');
+    if(CUser::isLogged()){
+        $pm = FPersistentManager::getInstance();
+        USession::getInstance();
+        $idUser = USession::getSessionElement('user');
 
-            $post = $pm::retriveObj(EPost::getEntity(), $idPost);
-
-            if($post !== null)
-            {
-                //create new Like Obj and persist it
-                $like = new ELike($idUser, $idPost);
-                $pm::uploadObj($like);
-            }
-            header('Location: /Agora/Post/visit/'.$idPost);
-        }else{
-            header('Location: /Agora/User/login');
+        $post = $pm::retriveObj(EPost::getEntity(), $idPost);
+        if(count($post) > 0){
+            //create new Like Obj and persist it
+            $like = new ELike($idUser, $idPost);
+            $pm::uploadObj($like);
         }
+        header('Location: /Agora/Post/visit/'.$idPost);
     }else{
-        header('Location: /Agora/User/home');
+        header('Location: /Agora/User/login');
     }
 }
 
 /**
  * this method is called when the User want to delete teh like of the Post that is visualizing 
+ * @param int $idPost Refers to the id of a post 
  */
 public static function deleteLike($idPost)
 {
-    if(UServer::getRequestMethod() == "POST")
-    {
-        if(CUser::isLogged())
-        {
-            $pm = FPersistentManager::getInstance();
-            USession::getInstance();
-            $idUser = USession::getSessionElement('user');
+    if(CUser::isLogged()){
+        $pm = FPersistentManager::getInstance();
+        USession::getInstance();
+        $idUser = USession::getSessionElement('user');
+            
+        $like = $pm::retriveLike($idUser, $idPost);
 
-            $like = $pm::retriveLike($idUser, $idPost);
-
-            //check if the like exist and the User who is deleting the like is the same User
-            if($like !== null && $like->getIdUser == $idUser)
-            {
-                $pm::deleteLike($like);
-            }
-            header('Location: /Agora/Post/visit/'.$idPost);
-        }else{
-            header('Location: /Agora/User/login');
+        //check if the like exist and the User who is deleting the like is the same User
+        if(!is_array($like)){
+            $pm::deleteLike($like->getId(), $idUser);
         }
+        header('Location: /Agora/Post/visit/'.$idPost);
     }else{
-        header('Location: /Agora/User/home');
+        header('Location: /Agora/User/login');
     }
 }
 

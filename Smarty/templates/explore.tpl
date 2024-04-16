@@ -88,13 +88,13 @@
         </label>
         <label class="menu-items tex-bold " >
           <span> <i class="uil uil-setting"></i></span> Setting
-          <button class="btn-transparent" onclick="location.href='/Agora/User/settings/0'"></button>
+          <button class="btn-transparent" onclick="location.href='/Agora/User/settings'"></button>
         </label>
       </div>
       <!--------------------END OF SIDE BAR----------------->
       <label
               class="btn btn-primary">Create post
-        <button class="btn-transparent" onclick="location.href='/Agora/Post/createPost'"></button>
+        <button class="btn-transparent" onclick="location.href='/Agora/Post/postForm'"></button>
       </label>
     </div>
 
@@ -104,16 +104,16 @@
     <div class="middle">
       <!----------------FEEDS-------------------------------->
       <div class="feeds">
-      {if $posts === null}
+      {if empty($posts)}
         <div class="error tex-bold">There are no Post</div>
       {else}
         {foreach $posts as $post}
           <div class="feed">
             <div class="head">
               <div class="user">
-              {if $exploreUsersPic[$post->getUser()->getId()]->getSize() > 0}
+              {if $post[1] !== null && $post[1]->getSize() > 0}
                 <div class="profile-photo">  
-                    <img src="data:{$exploreUsersPic[$post->getUser()->getId()]->getType()};base64,{$exploreUsersPic[$post->getUser()->getId()]->getEncodedData()}" alt="Img">
+                    <img src="data:{$post[1]->getType()};base64,{$post[1]->getEncodedData()}" alt="Img">
                 </div>
               {else}
                 <div class="profile-photo">
@@ -122,29 +122,29 @@
               {/if}
                 <div class="ingo">
                   <div>
-                    <a href="/Agora/Post/visit/{$post->getId()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$post->getTitle()}</a>
+                    <a href="/Agora/Post/visit/{$post[0]->getId()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$post[0]->getTitle()}</a>
                   </div>
-                  <small>{$post->getTime()->format('Y-m-d H:i:s')}</small>
+                  <small>{$post[0]->getTime()->format('Y-m-d H:i:s')}</small>
                 </div>
               </div>
-              <div class='vip'>{$post->getCategory()}</div>
+              <div class='vip'>{$post[0]->getCategory()}</div>
             </div>
             <div class="caption ">
               <!-- Smarty tag for username -->
               <p>
-              {if $post->getUser()->isVip()}
-                <a  href="/Agora/User/profile/{$post->getUser()->getUsername()}" class="vip"> {$post->getUser()->getUsername()}</a> <i class='uil uil-star vip'></i>
+              {if $post[0]->getUser()->isVip()}
+                <a  href="/Agora/User/profile/{$post[0]->getUser()->getUsername()}" class="vip"> {$post[0]->getUser()->getUsername()}</a> <i class='uil uil-star vip'></i>
               {else}
-                <a  href="/Agora/User/profile/{$post->getUser()->getUsername()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$post->getUser()->getUsername()}</a>
+                <a  href="/Agora/User/profile/{$post[0]->getUser()->getUsername()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$post[0]->getUser()->getUsername()}</a>
               {/if}
                  <span class="harsh-tag">
-                        {$post->getDescription()}</span></p>
+                        {$post[0]->getDescription()}</span></p>
             </div>
-            {if $post->getImages()->count() === 0}
+            {if count($post[0]->getImages()) === 0}
                         
               {else}
                 <div class="photo">
-                  {foreach from=$post->getImages() item=i}
+                  {foreach from=$post[0]->getImages() item=i}
                       <img src="data:{$i->getType()};base64,{$i->getEncodedData()}" loading="lazy" alt="Img">
                   {/foreach}
                 </div>
@@ -366,9 +366,9 @@
         <div class="writer">
            {foreach $arrVip as $vip} <!-- TOP WRITERS DEVE ESSE UN ARRAY DI 3 ELEMENTI-->
            <div class="info">
-           {if $vipPic[$vip->getId()]->getSize()> 0}
+           {if $vip[1]->getSize()> 0}
                <div class="profile-photo">
-                       <img src="data:{$vipPic[$vip->getId()]->getType()};base64,{$vipPic[$vip->getId()]->getEncodedData()}" alt="Img">
+                       <img src="data:{$vip[1]->getType()};base64,{$vip[1]->getEncodedData()}" alt="Img">
                </div>
            {else}
                <div class="profile-photo">
@@ -376,8 +376,8 @@
                </div>
            {/if}
                <div>
-               <a  href="/Agora/User/profile/{$vip->getUsername()}" class='vip'>{$vip->getUsername()}</a>
-                   <p class="text-muted">Followers : {$vipFollower[$vip->getId()]}</p> 
+               <a  href="/Agora/User/profile/{$vip[0]->getUsername()}" class='vip'>{$vip[0]->getUsername()}</a>
+                   <p class="text-muted">Followers : {$vip[2]}</p> 
                </div>
            </div>
            {/foreach}

@@ -89,12 +89,12 @@
                     <span> <i class="uil uil-palette"></i></span>Theme
                 </label>
               <label class="menu-items tex-bold" >
-                <button class="btn-transparent" onclick="location.href='/Agora/User/settings/0'">  <i class="uil uil-setting"></i></button>Setting
+                <button class="btn-transparent" onclick="location.href='/Agora/User/settings'">  <i class="uil uil-setting"></i></button>Setting
               </label>
         </div>
         <!--------------------END OF SIDE BAR----------------->
         <label class="btn btn-primary">create post
-          <button class="btn-transparent" onclick="location.href='/Agora/Post/createPost'"></button>
+          <button class="btn-transparent" onclick="location.href='/Agora/Post/postForm'"></button>
         </label>
     </div>
 
@@ -118,28 +118,28 @@
                       </div>
                         <div class="ingo">
                           <div>
-                            <a href="/Agora/Post/visit/{$post->getId()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$post->getTitle()}</a>
+                            <a href="/Agora/Post/visit/{$post[0]->getId()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$post[0]->getTitle()}</a>
                           </div>
-                          <small>{$post->getTime()->format('Y-m-d H:i:s')}</small>
+                          <small>{$post[0]->getTime()->format('Y-m-d H:i:s')}</small>
                         </div>
                     </div>
-                      <div style="background: linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red);-webkit-background-clip: text;background-clip: text;color: transparent;font-weight: bold;">{$post->getCategory()}</div>
+                      <div style="background: linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red);-webkit-background-clip: text;background-clip: text;color: transparent;font-weight: bold;">{$post[0]->getCategory()}</div>
                     <div>
-                      <form id="delete" action="/Agora/Post/delete/{$post->getId()}" method="get">
+                      <form id="delete" action="/Agora/Post/delete/{$post[0]->getId()}" method="get">
                         <button class="btn btn-transparent" id="delete"><i class="uil uil-trash-alt"></i>Delete</button>
                       </form>
                    </div>
                   </div>
                     <div class="caption ">
                         <!-- Smarty tag for username -->
-                        <p><b>{$post->getUser()->getUsername()}</b><span class="harsh-tag">
-                        {$post->getDescription()}</span></p>
+                        <p><b>{$post[0]->getUser()->getUsername()}</b><span class="harsh-tag">
+                        {$post[0]->getDescription()}</span></p>
                     </div>
-                    {if $post->getImages()->count() === 0}
+                    {if count($post[0]->getImages()) === 0}
                         
                       {else}
                         <div class="photo">
-                          {foreach from=$post->getImages() item=i}
+                          {foreach from=$post[0]->getImages() item=i}
                               <img src="data:{$i->getType()};base64,{$i->getEncodedData()}" loading="lazy" alt="Img">
                           {/foreach}
                         </div>
@@ -147,7 +147,7 @@
 
                     <div class="action-buttons">
                         <div class="interaction-buttons">
-                            <a href="/Agora/Post/visit/{$post->getId()}" style="text-decoration: none; color: inherit; "><i class="uil uil-comment-dots"></i></a>
+                            <a href="/Agora/Post/visit/{$post[0]->getId()}" style="text-decoration: none; color: inherit; "><i class="uil uil-comment-dots"></i></a>
                         </div>
                     </div>
 
@@ -156,7 +156,7 @@
                         <span><img src="/Agora/Smarty/immagini/A.png" alt=""></span>
                         {/for}
                         <!-- Smarty tag for username -->
-                        <p> liked by <a href="/Agora/Post/like/{$post->getId()}" style="text-decoration: none; color: inherit; font-weight : bold">{$arrayLikeNumb[$post->getId()]} user</a></p>
+                        <p> liked by <a href="/Agora/Post/like/{$post[0]->getId()}" style="text-decoration: none; color: inherit; font-weight : bold">{$post[1]} user</a></p>
                     </div>
                 </div>
                 {/foreach}

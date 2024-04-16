@@ -62,7 +62,7 @@ class EPost{
         $this->description = $description;
         $this->category = $category;
         $this->setTime();
-        $this->images = new ArrayCollection();
+        $this->images = [];
         
     }
     
@@ -73,6 +73,15 @@ class EPost{
     public function getTime()
     {
         return $this->creation_time;
+    }
+
+    public function setCreationTime($dateTime){
+        $this->creation_time = $dateTime;
+    }
+
+    public function getTimeStr()
+    {
+        return $this->creation_time->format('Y-m-d H:i:s');
     }
 
     public static function getEntity(): string
@@ -135,16 +144,32 @@ class EPost{
         $this->removed = $removed;
     }
 
-    public function getImages(): Collection
+    public function getImages()
     {
         return $this->images;
     }
 
     public function addImage(EImage $image): void
     {
-        if (!$this->images->contains($image)) {
+        $imageId = $image->getId(); // Assuming you have a method to get the image ID
+    
+        // Check if the image with the same ID exists in the images array
+        $imageExists = false;
+        foreach ($this->images as $existingImage) {
+            if ($existingImage->getId() === $imageId) {
+                $imageExists = true;
+                break;
+            }
+        }
+
+        // If the image doesn't exist in the array, add it
+        if (!$imageExists) {
             $this->images[] = $image;
             $image->setPost($this);
         }
+    }
+
+    public function setId($id){
+        $this->idPost = $id;
     }
 }

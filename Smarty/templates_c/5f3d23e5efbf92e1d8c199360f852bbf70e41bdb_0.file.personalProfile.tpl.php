@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2023-09-12 19:28:36
+/* Smarty version 3.1.33, created on 2024-04-13 21:48:44
   from 'C:\xampp\htdocs\Agora\Smarty\templates\personalProfile.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_65009fc4ca3443_28823747',
+  'unifunc' => 'content_661ae19cebcc76_80485749',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '5f3d23e5efbf92e1d8c199360f852bbf70e41bdb' => 
     array (
       0 => 'C:\\xampp\\htdocs\\Agora\\Smarty\\templates\\personalProfile.tpl',
-      1 => 1694450307,
+      1 => 1713037658,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_65009fc4ca3443_28823747 (Smarty_Internal_Template $_smarty_tpl) {
+function content_661ae19cebcc76_80485749 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -121,12 +121,12 @@ function content_65009fc4ca3443_28823747 (Smarty_Internal_Template $_smarty_tpl)
                     <span> <i class="uil uil-palette"></i></span>Theme
                 </label>
               <label class="menu-items tex-bold" >
-                <button class="btn-transparent" onclick="location.href='/Agora/User/settings/0'">  <i class="uil uil-setting"></i></button>Setting
+                <button class="btn-transparent" onclick="location.href='/Agora/User/settings'">  <i class="uil uil-setting"></i></button>Setting
               </label>
         </div>
         <!--------------------END OF SIDE BAR----------------->
         <label class="btn btn-primary">create post
-          <button class="btn-transparent" onclick="location.href='/Agora/Post/createPost'"></button>
+          <button class="btn-transparent" onclick="location.href='/Agora/Post/postForm'"></button>
         </label>
     </div>
 
@@ -154,18 +154,18 @@ foreach ($_from as $_smarty_tpl->tpl_vars['post']->value) {
                       </div>
                         <div class="ingo">
                           <div>
-                            <a href="/Agora/Post/visit/<?php echo $_smarty_tpl->tpl_vars['post']->value->getId();?>
-" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold"><?php echo $_smarty_tpl->tpl_vars['post']->value->getTitle();?>
+                            <a href="/Agora/Post/visit/<?php echo $_smarty_tpl->tpl_vars['post']->value[0]->getId();?>
+" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold"><?php echo $_smarty_tpl->tpl_vars['post']->value[0]->getTitle();?>
 </a>
                           </div>
-                          <small><?php echo $_smarty_tpl->tpl_vars['post']->value->getTime()->format('Y-m-d H:i:s');?>
+                          <small><?php echo $_smarty_tpl->tpl_vars['post']->value[0]->getTime()->format('Y-m-d H:i:s');?>
 </small>
                         </div>
                     </div>
-                      <div style="background: linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red);-webkit-background-clip: text;background-clip: text;color: transparent;font-weight: bold;"><?php echo $_smarty_tpl->tpl_vars['post']->value->getCategory();?>
+                      <div style="background: linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red);-webkit-background-clip: text;background-clip: text;color: transparent;font-weight: bold;"><?php echo $_smarty_tpl->tpl_vars['post']->value[0]->getCategory();?>
 </div>
                     <div>
-                      <form id="delete" action="/Agora/Post/delete/<?php echo $_smarty_tpl->tpl_vars['post']->value->getId();?>
+                      <form id="delete" action="/Agora/Post/delete/<?php echo $_smarty_tpl->tpl_vars['post']->value[0]->getId();?>
 " method="get">
                         <button class="btn btn-transparent" id="delete"><i class="uil uil-trash-alt"></i>Delete</button>
                       </form>
@@ -173,17 +173,17 @@ foreach ($_from as $_smarty_tpl->tpl_vars['post']->value) {
                   </div>
                     <div class="caption ">
                         <!-- Smarty tag for username -->
-                        <p><b><?php echo $_smarty_tpl->tpl_vars['post']->value->getUser()->getUsername();?>
+                        <p><b><?php echo $_smarty_tpl->tpl_vars['post']->value[0]->getUser()->getUsername();?>
 </b><span class="harsh-tag">
-                        <?php echo $_smarty_tpl->tpl_vars['post']->value->getDescription();?>
+                        <?php echo $_smarty_tpl->tpl_vars['post']->value[0]->getDescription();?>
 </span></p>
                     </div>
-                    <?php if ($_smarty_tpl->tpl_vars['post']->value->getImages()->count() === 0) {?>
+                    <?php if (count($_smarty_tpl->tpl_vars['post']->value[0]->getImages()) === 0) {?>
                         
                       <?php } else { ?>
                         <div class="photo">
                           <?php
-$_from = $_smarty_tpl->smarty->ext->_foreach->init($_smarty_tpl, $_smarty_tpl->tpl_vars['post']->value->getImages(), 'i');
+$_from = $_smarty_tpl->smarty->ext->_foreach->init($_smarty_tpl, $_smarty_tpl->tpl_vars['post']->value[0]->getImages(), 'i');
 if ($_from !== null) {
 foreach ($_from as $_smarty_tpl->tpl_vars['i']->value) {
 ?>
@@ -199,7 +199,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
 
                     <div class="action-buttons">
                         <div class="interaction-buttons">
-                            <a href="/Agora/Post/visit/<?php echo $_smarty_tpl->tpl_vars['post']->value->getId();?>
+                            <a href="/Agora/Post/visit/<?php echo $_smarty_tpl->tpl_vars['post']->value[0]->getId();?>
 " style="text-decoration: none; color: inherit; "><i class="uil uil-comment-dots"></i></a>
                         </div>
                     </div>
@@ -216,8 +216,8 @@ for ($_foo=true;$_smarty_tpl->tpl_vars['i']->value < 3; $_smarty_tpl->tpl_vars['
 }
 ?>
                         <!-- Smarty tag for username -->
-                        <p> liked by <a href="/Agora/Post/like/<?php echo $_smarty_tpl->tpl_vars['post']->value->getId();?>
-" style="text-decoration: none; color: inherit; font-weight : bold"><?php echo $_smarty_tpl->tpl_vars['arrayLikeNumb']->value[$_smarty_tpl->tpl_vars['post']->value->getId()];?>
+                        <p> liked by <a href="/Agora/Post/like/<?php echo $_smarty_tpl->tpl_vars['post']->value[0]->getId();?>
+" style="text-decoration: none; color: inherit; font-weight : bold"><?php echo $_smarty_tpl->tpl_vars['post']->value[1];?>
  user</a></p>
                     </div>
                 </div>

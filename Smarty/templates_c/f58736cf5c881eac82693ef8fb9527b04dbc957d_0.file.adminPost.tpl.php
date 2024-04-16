@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2023-09-11 12:18:33
+/* Smarty version 3.1.33, created on 2024-04-14 12:37:37
   from 'C:\xampp\htdocs\Agora\Smarty\templates\adminPost.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_64fee979eb0c29_02775720',
+  'unifunc' => 'content_661bb1f1beaca0_40344923',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'f58736cf5c881eac82693ef8fb9527b04dbc957d' => 
     array (
       0 => 'C:\\xampp\\htdocs\\Agora\\Smarty\\templates\\adminPost.tpl',
-      1 => 1694380151,
+      1 => 1713090896,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_64fee979eb0c29_02775720 (Smarty_Internal_Template $_smarty_tpl) {
+function content_661bb1f1beaca0_40344923 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -96,7 +96,7 @@ function content_64fee979eb0c29_02775720 (Smarty_Internal_Template $_smarty_tpl)
             <?php echo $_smarty_tpl->tpl_vars['post']->value->getDescription();?>
 </span></p>
                 </div>
-                <?php if ($_smarty_tpl->tpl_vars['post']->value->getImages()->count() === 0) {?>
+                <?php if (count($_smarty_tpl->tpl_vars['post']->value->getImages()) === 0) {?>
 
                 <?php } else { ?>
                     <div class="photo">
@@ -119,7 +119,8 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
         </div>
 
         <div>
-            <form id='ban' action="/Agora/Moderator/ban/post/<?php echo $_smarty_tpl->tpl_vars['post']->value->getId();?>
+            <form id='ban' action="/Agora/Moderator/banPost/<?php echo $_smarty_tpl->tpl_vars['post']->value->getId();?>
+/<?php echo $_smarty_tpl->tpl_vars['post']->value->getUser()->getId();?>
 " method="post">
                 <button class="btn btn-primary "><i class="uil uil-trash-alt">Ban</i></button>
             </form>

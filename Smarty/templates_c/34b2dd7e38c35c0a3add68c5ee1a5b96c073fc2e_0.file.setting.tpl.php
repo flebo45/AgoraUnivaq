@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2023-09-09 22:00:27
+/* Smarty version 3.1.33, created on 2024-04-13 17:44:28
   from 'C:\xampp\htdocs\Agora\Smarty\templates\setting.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_64fccedb829226_59901045',
+  'unifunc' => 'content_661aa85ccf1e08_00308716',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '34b2dd7e38c35c0a3add68c5ee1a5b96c073fc2e' => 
     array (
       0 => 'C:\\xampp\\htdocs\\Agora\\Smarty\\templates\\setting.tpl',
-      1 => 1694289593,
+      1 => 1712935890,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_64fccedb829226_59901045 (Smarty_Internal_Template $_smarty_tpl) {
+function content_661aa85ccf1e08_00308716 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!doctype html>
 <html lang="eng">
 <head>
@@ -91,7 +91,7 @@ function content_64fccedb829226_59901045 (Smarty_Internal_Template $_smarty_tpl)
           <span> <i class="uil uil-palette"></i></span>Theme
         </label>
         <label class="menu-items active tex-bold " >
-          <button class="btn-transparent" onclick="location.href='/Agora/User/settings/0'"><i class="uil uil-setting"></i> </button>Setting
+          <button class="btn-transparent" onclick="location.href='/Agora/User/settings'"><i class="uil uil-setting"></i> </button>Setting
         </label>
       </div>
       <!--------------------END OF SIDE BAR----------------->
@@ -105,7 +105,7 @@ function content_64fccedb829226_59901045 (Smarty_Internal_Template $_smarty_tpl)
 
 
     <div class="box-setting">
-    <form enctype="multipart/form-data" action="/Agora/User/settings/4" method="post" >
+    <form enctype="multipart/form-data" action="/Agora/User/setProPic" method="post" >
     <?php if ($_smarty_tpl->tpl_vars['userPic']->value->getSize() > 0) {?>
       <div class="profile-photo">  
           <img src="data:<?php echo $_smarty_tpl->tpl_vars['userPic']->value->getType();?>
@@ -131,7 +131,7 @@ function content_64fccedb829226_59901045 (Smarty_Internal_Template $_smarty_tpl)
       </div>
 
     </form>
-    <form enctype="multipart/form-data" action="/Agora/User/settings/1" method="post" >
+    <form enctype="multipart/form-data" action="/Agora/User/setUserInfo" method="post" >
       <div class="info-profile">
         <h4 class="tex-bold" >Biography</h4>
         <label>
@@ -163,7 +163,7 @@ function content_64fccedb829226_59901045 (Smarty_Internal_Template $_smarty_tpl)
           </label>
         </div>
         </form>
-        <form enctype="multipart/form-data" action="/Agora/User/settings/2" method="post" >
+        <form enctype="multipart/form-data" action="/Agora/User/setUsername" method="post" >
         <h4 class="tex-bold" >UserName</h4>
           <?php if ($_smarty_tpl->tpl_vars['error']->value == true) {?>
           <div style="color: red ; margin-left: 4%">Username already taken</div>
@@ -179,7 +179,7 @@ function content_64fccedb829226_59901045 (Smarty_Internal_Template $_smarty_tpl)
           <button type="reset" class="btn btn-primary">Delete</button>
         </label>
       </form>
-      <form enctype="multipart/form-data" action="/Agora/User/settings/3" method="post" >
+      <form enctype="multipart/form-data" action="/Agora/User/setPassword" method="post" >
         <h4 class="tex-bold">Password</h4>
         <label>
           <input type="password" id="password" class="text" name="password" placeholder="NewPassword">

@@ -41,10 +41,10 @@ class VModerator{
     /**
      * @throws SmartyException
      */
-    public function visitUser($user, $userPic, $arrayPostUser, $followerNumb, $followedNumb, $modUsername){
+    public function visitUser($userAndPropic, $arrayPostUser, $followerNumb, $followedNumb, $modUsername){
         $this->smarty->assign('modUsername', $modUsername);
-        $this->smarty->assign('user', $user);
-        $this->smarty->assign('userPic', $userPic);
+        $this->smarty->assign('user', $userAndPropic[0][0]);
+        $this->smarty->assign('userPic', $userAndPropic[0][1]);
         $this->smarty->assign('arrayPostUser', $arrayPostUser);
         $this->smarty->assign('follower', $followerNumb);
         $this->smarty->assign('followed', $followedNumb);
@@ -55,7 +55,7 @@ class VModerator{
     public function visitPost($post,$userPic,$modUsername){
         $this->smarty->assign('modUsername', $modUsername);
         $this->smarty->assign('post', $post);
-        $this->smarty->assign('userPic', $userPic);
+        $this->smarty->assign('userPic', $userPic[0][1]);
         $this->smarty->display('adminPost.tpl');
     }
 }

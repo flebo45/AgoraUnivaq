@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2023-09-11 11:28:47
+/* Smarty version 3.1.33, created on 2024-04-13 19:53:10
   from 'C:\xampp\htdocs\Agora\Smarty\templates\userlist.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_64feddcfb5ecd0_24900558',
+  'unifunc' => 'content_661ac686427ed1_46752771',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '7077b3d57b201de6d8dcbebc2f11af1d91671170' => 
     array (
       0 => 'C:\\xampp\\htdocs\\Agora\\Smarty\\templates\\userlist.tpl',
-      1 => 1694424519,
+      1 => 1713030787,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_64feddcfb5ecd0_24900558 (Smarty_Internal_Template $_smarty_tpl) {
+function content_661ac686427ed1_46752771 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -95,7 +95,7 @@ function content_64feddcfb5ecd0_24900558 (Smarty_Internal_Template $_smarty_tpl)
                     <span> <i class="uil uil-palette"></i></span>Theme
                 </label>
                 <label class="menu-items tex-bold " >
-                    <button class="btn-transparent" onclick="location.href='/Agora/User/settings/0'"><i class="uil uil-setting"></i> </button>Setting
+                    <button class="btn-transparent" onclick="location.href='/Agora/User/settings'"><i class="uil uil-setting"></i> </button>Setting
                 </label>
             </div>
             <!--------------------END OF SIDE BAR----------------->
@@ -128,10 +128,10 @@ foreach ($_from as $_smarty_tpl->tpl_vars['l']->value) {
 ?>
                     
                     <div style="display: flex; align-items: center; font-size:18px; margin-top:1rem">
-                        <?php if ($_smarty_tpl->tpl_vars['userPic']->value[$_smarty_tpl->tpl_vars['l']->value->getId()]->getSize() > 0) {?>
+                        <?php if ($_smarty_tpl->tpl_vars['l']->value[1]->getSize() > 0) {?>
                             <div class="profile-photo">
-                                <img src="data:<?php echo $_smarty_tpl->tpl_vars['userPic']->value[$_smarty_tpl->tpl_vars['l']->value->getId()]->getType();?>
-;base64,<?php echo $_smarty_tpl->tpl_vars['userPic']->value[$_smarty_tpl->tpl_vars['l']->value->getId()]->getEncodedData();?>
+                                <img src="data:<?php echo $_smarty_tpl->tpl_vars['l']->value[1]->getType();?>
+;base64,<?php echo $_smarty_tpl->tpl_vars['l']->value[1]->getEncodedData();?>
 " alt="Img">
                             </div>
                         <?php } else { ?>
@@ -141,28 +141,28 @@ foreach ($_from as $_smarty_tpl->tpl_vars['l']->value) {
                         <?php }?>
                         
                         <?php if ($_smarty_tpl->tpl_vars['param']->value == 'like') {?>
-                            <?php if ($_smarty_tpl->tpl_vars['l']->value->isVip()) {?>
-                                <i class="uil uil-heart" style="color:red; margin-left:1rem"></i><a href="/Agora/User/profile/<?php echo $_smarty_tpl->tpl_vars['l']->value->getUsername();?>
-" class="vip"><?php echo $_smarty_tpl->tpl_vars['l']->value->getUsername();?>
+                            <?php if ($_smarty_tpl->tpl_vars['l']->value[0]->isVip()) {?>
+                                <i class="uil uil-heart" style="color:red; margin-left:1rem"></i><a href="/Agora/User/profile/<?php echo $_smarty_tpl->tpl_vars['l']->value[0]->getUsername();?>
+" class="vip"><?php echo $_smarty_tpl->tpl_vars['l']->value[0]->getUsername();?>
 </a>
                             <?php } else { ?>
-                            <i class="uil uil-heart" style="color:red; margin-left:1rem"></i> <a href="/Agora/User/profile/<?php echo $_smarty_tpl->tpl_vars['l']->value->getUsername();?>
-" class="tex-bold" style="text-decoration: none; color: inherit"><?php echo $_smarty_tpl->tpl_vars['l']->value->getUsername();?>
+                            <i class="uil uil-heart" style="color:red; margin-left:1rem"></i> <a href="/Agora/User/profile/<?php echo $_smarty_tpl->tpl_vars['l']->value[0]->getUsername();?>
+" class="tex-bold" style="text-decoration: none; color: inherit"><?php echo $_smarty_tpl->tpl_vars['l']->value[0]->getUsername();?>
 </a>
                             <?php }?>
-                            <p class="text-muted left-transition"> <?php echo $_smarty_tpl->tpl_vars['l']->value->getName();?>
+                            <p class="text-muted left-transition"> <?php echo $_smarty_tpl->tpl_vars['l']->value[0]->getName();?>
 </p>
                         <?php } else { ?>
-                            <?php if ($_smarty_tpl->tpl_vars['l']->value->isVip()) {?>
-                                <i class='uil uil-star' class="vip"></i> <a href="/Agora/User/profile/<?php echo $_smarty_tpl->tpl_vars['l']->value->getUsername();?>
-" class="vip"><?php echo $_smarty_tpl->tpl_vars['l']->value->getUsername();?>
+                            <?php if ($_smarty_tpl->tpl_vars['l']->value[0]->isVip()) {?>
+                                <i class='uil uil-star' class="vip"></i> <a href="/Agora/User/profile/<?php echo $_smarty_tpl->tpl_vars['l']->value[0]->getUsername();?>
+" class="vip"><?php echo $_smarty_tpl->tpl_vars['l']->value[0]->getUsername();?>
 </a>
                             <?php } else { ?>
-                                <i class="uil uil-chat-bubble-user" style="color:red; margin-left:1rem"></i> <a href="/Agora/User/profile/<?php echo $_smarty_tpl->tpl_vars['l']->value->getUsername();?>
-" class="tex-bold" style="text-decoration: none; color: inherit"><?php echo $_smarty_tpl->tpl_vars['l']->value->getUsername();?>
+                                <i class="uil uil-chat-bubble-user" style="color:red; margin-left:1rem"></i> <a href="/Agora/User/profile/<?php echo $_smarty_tpl->tpl_vars['l']->value[0]->getUsername();?>
+" class="tex-bold" style="text-decoration: none; color: inherit"><?php echo $_smarty_tpl->tpl_vars['l']->value[0]->getUsername();?>
 </a>
                             <?php }?>
-                            <p class="text-muted left-transition"> <?php echo $_smarty_tpl->tpl_vars['l']->value->getName();?>
+                            <p class="text-muted left-transition"> <?php echo $_smarty_tpl->tpl_vars['l']->value[0]->getName();?>
 </p>
                         <?php }?>
                         

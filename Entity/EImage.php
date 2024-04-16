@@ -84,7 +84,7 @@ use Doctrine\ORM\Mapping as ORM;
     }
 
     public function getEncodedData(){
-        return base64_encode(stream_get_contents($this->imageData));
+        return base64_encode($this->imageData);
     }
 
     public function setPost(EPost $post): void
@@ -95,5 +95,9 @@ use Doctrine\ORM\Mapping as ORM;
     public function getPost(): ?EPost
     {
         return $this->post;
+    }
+
+    public function setId($id){
+        $this->idImage = $id;
     }
 }

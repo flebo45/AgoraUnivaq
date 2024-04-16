@@ -148,4 +148,8 @@ class EUser extends EPerson{
         $this->warnings = $this->warnings + 1;
     }
 
+    public function setWarning($warning){
+        $this->warnings = $warning;
+    }
+
 }

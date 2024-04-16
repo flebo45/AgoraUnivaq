@@ -68,7 +68,7 @@
                     <span> <i class="uil uil-palette"></i></span>Theme
                 </label>
                 <label class="menu-items tex-bold " >
-                    <button class="btn-transparent" onclick="location.href='/Agora/User/settings/0'"><i class="uil uil-setting"></i> </button>Setting
+                    <button class="btn-transparent" onclick="location.href='/Agora/User/settings'"><i class="uil uil-setting"></i> </button>Setting
                 </label>
             </div>
             <!--------------------END OF SIDE BAR----------------->
@@ -97,9 +97,9 @@
                 {foreach $userList as $l}
                     
                     <div style="display: flex; align-items: center; font-size:18px; margin-top:1rem">
-                        {if $userPic[$l->getId()]->getSize() > 0}
+                        {if $l[1]->getSize() > 0}
                             <div class="profile-photo">
-                                <img src="data:{$userPic[$l->getId()]->getType()};base64,{$userPic[$l->getId()]->getEncodedData()}" alt="Img">
+                                <img src="data:{$l[1]->getType()};base64,{$l[1]->getEncodedData()}" alt="Img">
                             </div>
                         {else}
                             <div class="profile-photo">
@@ -108,19 +108,19 @@
                         {/if}
                         
                         {if $param == 'like'}
-                            {if $l->isVip()}
-                                <i class="uil uil-heart" style="color:red; margin-left:1rem"></i><a href="/Agora/User/profile/{$l->getUsername()}" class="vip">{$l->getUsername()}</a>
+                            {if $l[0]->isVip()}
+                                <i class="uil uil-heart" style="color:red; margin-left:1rem"></i><a href="/Agora/User/profile/{$l[0]->getUsername()}" class="vip">{$l[0]->getUsername()}</a>
                             {else}
-                            <i class="uil uil-heart" style="color:red; margin-left:1rem"></i> <a href="/Agora/User/profile/{$l->getUsername()}" class="tex-bold" style="text-decoration: none; color: inherit">{$l->getUsername()}</a>
+                            <i class="uil uil-heart" style="color:red; margin-left:1rem"></i> <a href="/Agora/User/profile/{$l[0]->getUsername()}" class="tex-bold" style="text-decoration: none; color: inherit">{$l[0]->getUsername()}</a>
                             {/if}
-                            <p class="text-muted left-transition"> {$l->getName()}</p>
+                            <p class="text-muted left-transition"> {$l[0]->getName()}</p>
                         {else}
-                            {if $l->isVip()}
-                                <i class='uil uil-star' class="vip"></i> <a href="/Agora/User/profile/{$l->getUsername()}" class="vip">{$l->getUsername()}</a>
+                            {if $l[0]->isVip()}
+                                <i class='uil uil-star' class="vip"></i> <a href="/Agora/User/profile/{$l[0]->getUsername()}" class="vip">{$l[0]->getUsername()}</a>
                             {else}
-                                <i class="uil uil-chat-bubble-user" style="color:red; margin-left:1rem"></i> <a href="/Agora/User/profile/{$l->getUsername()}" class="tex-bold" style="text-decoration: none; color: inherit">{$l->getUsername()}</a>
+                                <i class="uil uil-chat-bubble-user" style="color:red; margin-left:1rem"></i> <a href="/Agora/User/profile/{$l[0]->getUsername()}" class="tex-bold" style="text-decoration: none; color: inherit">{$l[0]->getUsername()}</a>
                             {/if}
-                            <p class="text-muted left-transition"> {$l->getName()}</p>
+                            <p class="text-muted left-transition"> {$l[0]->getName()}</p>
                         {/if}
                         
                     </div>

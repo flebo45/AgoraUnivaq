@@ -65,7 +65,7 @@
             </div>
             <div class="right">
               <div>
-              <form id='ban' action="/Agora/Moderator/ban/post/{$report->getPost()->getId()}" method="post">
+              <form id='ban' action="/Agora/Moderator/banPost/{$report->getPost()->getId()}/{$report->getPost()->getUser()->getId()}" method="post">
                 <button class="btn btn-primary "><i class="uil uil-trash-alt">Ban</i></button>
               </form>
               </div>
@@ -84,7 +84,7 @@
           <h3 class="title">Body Comments</h3>
           <h3 class="title">Action</h3>
         </div>
-      {if count($reportedPost) === 0}
+      {if count($reportedComment) === 0}
           <div class="admin" style="margin-top: 1rem;">There are no reported comment</div>
       {else}
         {foreach $reportedComment as $report}
@@ -101,7 +101,7 @@
             </div>
             <div class="right">
               <div>
-              <form id='ban' action="/Agora/Moderator/ban/comment/{$report->getComment()->getId()}" method="post">
+              <form id='ban' action="/Agora/Moderator/banComment/{$report->getComment()->getId()}" method="post">
                 <button class="btn btn-primary "><i class="uil uil-trash-alt">Ban</i></button>
               </form>
               </div>

@@ -72,6 +72,11 @@ class EPerson{
         return $this->idUser;
     }
 
+    public function setId($id)
+    {
+        $this->idUser = $id;
+    }
+
     /**
      * @return mixed
      */
@@ -128,6 +133,11 @@ class EPerson{
     public function setPassword($password)
     {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $this->password = $hashedPassword;
+    }
+
+    public function setHashedPassword($hashedPassword)
+    {
         $this->password = $hashedPassword;
     }
 

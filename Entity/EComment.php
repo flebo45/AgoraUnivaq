@@ -54,9 +54,18 @@ class EComment{
         $this->creation_time = new DateTime("now");
     }
 
+    public function setCreationTime(DateTime $dateTime){
+        $this->creation_time = $dateTime;
+    }
+
     public function getTime()
     {
         return $this->creation_time;
+    }
+
+    public function getTimeStr()
+    {
+        return $this->creation_time->format('Y-m-d H:i:s');
     }
 
     public static function getEntity(): string
@@ -68,6 +77,11 @@ class EComment{
     public function getId()
     {
         return $this->idComment;
+    }
+
+    public function setId($id)
+    {
+        $this->idComment = $id;
     }
     
     public function getUser()

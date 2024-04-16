@@ -40,51 +40,29 @@ class CUser{
     }
 
     /**
-     * check the request, and call to checkRegistration() to start the registartion process
+     * verify if the choosen username and email already exist, create the User Obj and set a default profile image 
      * @return void
      */
     public static function registration()
     {
-        if(UServer::getRequestMethod() == "POST"){
-            self::checkRegistration();
-        }
-        else{
-            header('Location: /Agora/User/login');
-        }
-    }
-
-    /**
-     * verify if the choosen username and email already exist, create the User Obj and set a default profile image 
-     * @return void
-     */
-    public static function checkRegistration()
-    {
         $pm = FPersistentManager::getInstance();
-        $email = $pm::verifyUserEmail(UHTTPMethods::post('email'));                                             //TODO
         $view = new VUser();
-        if($email == false){
-            $username = $pm::verifyUserUsername(UHTTPMethods::post('username'));
-            if($username == false){
+        if($pm::verifyUserEmail(UHTTPMethods::post('email')) == false && $pm::verifyUserUsername(UHTTPMethods::post('username')) == false){
                 $user = new EUser(UHTTPMethods::post('name'), UHTTPMethods::post('surname'),UHTTPMethods::post('age'), UHTTPMethods::post('email'),UHTTPMethods::post('password'),UHTTPMethods::post('username'));
                 $pm::uploadObj($user);
                 if($pm::retriveObj(EImage::getEntity(), 1) != null){
                     $user->setIdImage(1);
-                    $pm::uploadObj($user);
+                    $pm::updateUserIdImage($user);
                 }else{
                     $image = new EImage('default', 0, "image/png", "default");
                     $pm::uploadObj($image);
                     $user->setIdImage(1);
-                    $pm::uploadObj($user);
+                    $pm::updateUserIdImage($user);
                 }
                 header('Location: /Agora/User/login');
-            }
-            else{
+        }else{
                 $view->registrationError();
             }
-        }
-        else{
-            $view->registrationError();
-        }
     }
 
     /**
@@ -94,51 +72,40 @@ class CUser{
      */
     public static function login()
     {
-        if(UServer::getRequestMethod() == "GET"){
-            if(self::isLogged()){
-                header('Location: /Agora/User/home');
-            }else{
-                $view = new VUser();
-                $view->showLoginForm();
-            }
-           }
-           elseif(UServer::getRequestMethod() == "POST"){
-            self::checkLogin();
-           }
+        if(self::isLogged()){
+            header('Location: /Agora/User/home');
+        }else{
+            $view = new VUser();
+            $view->showLoginForm();
+        }
     }
 
     /**
-     * check if exist teh Username inserted, and for this username check the password. If is everything correct the session is created and
+     * check if exist the Username inserted, and for this username check the password. If is everything correct the session is created and
      * the User is redirected in the homepage
      */
     public static function checkLogin()
     {
-        if(UServer::getRequestMethod() != 'GET'){
             $pm = FPersistentManager::getInstance();
             $view = new VUser();
-            $username = $pm::verifyUserUsername(UHTTPMethods::post('username'));                                            //TODO
+            $username = $pm::verifyUserUsername(UHTTPMethods::post('username'));                                            
             if($username){
                 $user = $pm::retriveUserOnUsername(UHTTPMethods::post('username'));
                 if(password_verify(UHTTPMethods::post('password'), $user->getPassword())){
                     if($user->isBanned()){
                         $view->loginBan();
-                    }
-                    else{
-                        if(USession::getSessionStatus() == PHP_SESSION_NONE){
+
+                    }elseif(USession::getSessionStatus() == PHP_SESSION_NONE){
                             USession::getInstance();
                             USession::setSessionElement('user', $user->getId());
                             header('Location: /Agora/User/home');
-                        }
                     }
                 }else{
-                
                     $view->loginError();
                 }
-                
             }else{
                 $view->loginError();
             }
-        }
     }
 
     /**
@@ -158,53 +125,24 @@ class CUser{
      */
     public static function home()
     {
-        if(UServer::getRequestMethod() == "GET"){
-            if(CUser::isLogged())
-        {
+        if(CUser::isLogged()){
             $pm = FPersistentManager::getInstance();
+            USession::getInstance();
             $view = new VUser();
 
             $userId = USession::getSessionElement('user');
-            $user = $pm::retriveObj(EUser::getEntity(), $userId);
-            $proPic = $pm::retriveObj(EImage::getEntity(), $user->getIdImage());
+            $userAndPropic = $pm::loadUsersAndImage($userId);
 
-            $postInHome = $pm::loadHomePage($user->getId());
+            //load all the posts of the users who you follow(post have user attribute) and the profile pic of the author of teh post
+            $postInHome = $pm::loadHomePage($userId);
             
-            //load the VIP Users and their profile Images
-            $vipUsers = $pm::loadVip();
-            $vipPic = array();
-            $vipFollower = array();
-            
-
-            foreach($vipUsers as $v)
-            {
-                //associative array for the Vip's images
-                $vipPic[$v->getId()] = $pm::retriveObj(EImage::getEntity(), $v->getIdImage());
-                //associative array for Vip's followers number
-                $vipFollower[$v->getId()] = $pm::getFollowerNumb($v->getId());
-            }
-
-
-
-            if(count($postInHome) === 0)
-            {
-                $view->home($user, $proPic, null,null, $vipUsers, $vipPic, $vipFollower);
-            }else{
-                $followedPic = array();
-                foreach($postInHome as $p)
-                {
-                    //asscoiative array for the users profile pic 
-                    $followedPic[$p->getUser()->getId()] = $pm::retriveObj(EImage::getEntity(), $p->getUser()->getIdImage());
-                }
-                $view->home($user, $proPic, $postInHome,$followedPic, $vipUsers, $vipPic, $vipFollower);
-            }
+            //load the VIP Users, their profile Images and the foillower number
+            $arrayVipUserPropicFollowNumb = $pm::loadVip();
+        
+            $view->home($userAndPropic, $postInHome,$arrayVipUserPropicFollowNumb);
         }else{
             header('Location: /Agora/User/login');
-        }
-        }else{
-            header('Location: /Agora/User/home');
-        }
-        
+        }   
     }
 
     /**
@@ -212,64 +150,45 @@ class CUser{
      */
     public static function personalProfile()
     {
-        if(UServer::getRequestMethod() == "GET")
-        {
-            if(CUser::isLogged())
-            { 
-                $view = new VUser();
-                USession::getInstance();
-                $pm = FPersistentManager::getInstance();
-                $userId = USession::getSessionElement('user');
-                $user = $pm::retriveObj(EUser::getEntity(), $userId);
-                $proPic = $pm::retriveObj(EImage::getEntity(), $user->getIdImage());
+        if(CUser::isLogged()){ 
+            $pm = FPersistentManager::getInstance();
+            USession::getInstance();
+            $view = new VUser();
+
+            $userId = USession::getSessionElement('user');
+            $userAndPropic = $pm::loadUsersAndImage($userId);
                 
-                //load all the Posts belonged to a User that are not Banned
-                $postProfile = $pm::loadUserPage($user->getId());
+            //load all the Posts belonged to a User that are not Banned
+            $postProfileAndLikes = $pm::loadUserPage($userId);
 
-                //load the number of followed and following users
-                $followerNumb = $pm::getFollowerNumb($userId);
-                $followedNumb = $pm::getFollowedNumb($userId);
+            //load the number of followed and following users
+            $followerNumb = $pm::getFollowerNumb($userId);
+            $followedNumb = $pm::getFollowedNumb($userId);
 
-                if(count($postProfile) === 0)
-                {
-                    $view->uploadPersonalUserInfo($user, $proPic, null, null, $followerNumb, $followedNumb);
-                }else{
-                    $arrayLikeNumb = array();
-                    foreach($postProfile as $p)
-                    {
-                        $arrayLikeNumb[$p->getId()] = $pm::getLikeNumber($p->getId());
-                    }
-                    $view->uploadPersonalUserInfo($user,$proPic, $postProfile, $arrayLikeNumb, $followerNumb, $followedNumb);
-                }
-            }else{
-                header('Location: /Agora/User/login');
-            }
+            $view->uploadPersonalUserInfo($userAndPropic, $postProfileAndLikes, $followerNumb, $followedNumb);
         }else{
-            header('Location: /Agora/User/home');
+            header('Location: /Agora/User/login');
         }
     }
 
     /**
-     * load post belonget to the visited User and his informations
+     * load post belonged to the visited User and his informations
+     * @param String $username Refers to the username of a user
      */
     public static function profile($username)
     {
-        if(UServer::getRequestMethod() == "GET")
-        {
-            if(CUser::isLogged())
-            {
-                USession::getInstance();
+            if(CUser::isLogged()){
                 $pm = FPersistentManager::getInstance();
+                USession::getInstance();
 
                 $personalUserId =  USession::getSessionElement('user');
-                $personalUser = $pm::retriveObj(EUser::getEntity(), $personalUserId);
-                if($personalUser->getUsername() != $username)
+                $personalUserAndPropic = $pm::loadUsersAndImage($personalUserId);
+                if($personalUserAndPropic[0][0]->getUsername() != $username)
                 {
                     if($pm::verifyUserUsername($username))
                     {
-                        $personalProPic = $pm::retriveObj(EImage::getEntity(), $personalUser->getIdImage());
                         $user = $pm::retriveUserOnUsername($username);
-                        $profileProPic = $pm::retriveObj(EImage::getEntity(), $user->getIdImage());
+                        $userAndPropic = $pm::loadUsersAndImage($user->getId());
 
                         $postUser = $pm::loadUserPage($user->getId());
                         $follow = $pm::retriveFollow($personalUserId, $user->getId());
@@ -277,26 +196,9 @@ class CUser{
                         $followerNumb = $pm::getFollowerNumb($user->getId());
                         $followedNumb = $pm::getFollowedNumb($user->getId());
                         $view = new VUser();
+                        
 
-                        //check if the Logged User is following the visited User
-                        if($follow !== null)
-                        {
-                            $followCheck = true;
-                        }else{
-                            $followCheck = false;
-                        }
-                        if(count($postUser) === 0)
-                        {
-                            $view->uploadUserInfo($user, $profileProPic, $personalUser, $personalProPic, null, null, $followCheck, $followerNumb, $followedNumb);
-                        }else{
-                            $arrayLikeNumb = array();
-                            foreach($postUser as $p)
-                            {
-                                //associative array for the number of like
-                                $arrayLikeNumb[$p->getId()] = $pm::getLikeNumber($p->getId());
-                            }
-                            $view->uploadUserInfo($user, $profileProPic, $personalUser, $personalProPic, $postUser, $arrayLikeNumb, $followCheck, $followerNumb, $followedNumb);
-                        }
+                        $view->uploadUserInfo($userAndPropic, $personalUserAndPropic, $postUser,  $follow, $followerNumb, $followedNumb);
                     }else{
                         header('Location: /Agora/User/home');
                     }
@@ -307,186 +209,161 @@ class CUser{
             }else{
                 header('Location: /Agora/User/login');
             }
-        }else{
-            header('Location: /Agora/User/home');
-        }
     }
 
     /**
-     * check the request: if Get load the settings page compiling the form withe the user data
-     * if Post check the attributes changed
+     * load the settings page compiled with the user data
      */
-    public static function settings($param)
-    {
-        if(UServer::getRequestMethod() == "GET")
-        {
-            if(CUser::isLogged())
-            {
-                //param 0 load the page
-                if($param == 0)
-                {
-                    $view = new VUser();
-                    $pm = FPersistentManager::getInstance();
-                    USession::getInstance();
-
-                    $userId = USession::getSessionElement('user');
-                    $user = $pm::retriveObj(EUser::getEntity(), $userId);
-                    $proPic = $pm::retriveObj(EImage::getEntity(), $user->getIdImage());
-                    $view->settings($user, $proPic);
-                }else{
-                    header('Location: /Agora/User/home');
-                }
-            }else{
-                header('Location: /Agora/User/login');
-            }
-            
-        }elseif(UServer::getRequestMethod() == 'POST')
-        {
-            if(CUser::isLogged())
-            {
+    public static function settings(){
+            if(CUser::isLogged()){
                 $pm = FPersistentManager::getInstance();
                 USession::getInstance();
                 $view = new VUser();
-                
+
                 $userId = USession::getSessionElement('user');
-                $user = $pm::retriveObj(EUser::getEntity(), $userId);
-                //param 1 Credential form (bio, hobby ecc)
-                if($param == 1)
-                {
-                    $user->setBio(UHTTPMethods::post('Bio'));
-                    $user->setWorking(UHTTPMethods::post('Working'));                                               //TODO
-                    $user->setStudiedAt(UHTTPMethods::post('StudiedAt'));
-                    $user->setHobby(UHTTPMethods::post('Hobby'));
-                    $pm::uploadObj($user);
-                    header('Location: /Agora/User/personalProfile');
-                //param 2 Username
-                }elseif($param == 2)
-                {
-                    if($user->getUsername() == UHTTPMethods::post('username')){
-                        header('Location: /Agora/User/personalProfile');
-                    }else{
-                        if($pm::verifyUserUsername(UHTTPMethods::post('username')) == false)
-                        {
-                            $user->setUsername(UHTTPMethods::post('username'));
-                            $pm::uploadObj($user);
-                            header('Location: /Agora/User/personalProfile');
-                        }else{
-                            $pm = FPersistentManager::getInstance();
-                            USession::getInstance();
-
-                            $userId = USession::getSessionElement('user');
-                            $user = $pm::retriveObj(EUser::getEntity(), $userId);
-                            $proPic = $pm::retriveObj(EImage::getEntity(), $user->getIdImage());
-
-                            $view->usernameError($user , true, $proPic);
-                        }
-                    }
-
-
-
-                //param 3 Password
-                }elseif($param == 3)
-                {
-                    $newPass = UHTTPMethods::post('password');
-                    $user->setPassword($newPass);
-                    $pm::uploadObj($user);
-                    header('Location: /Agora/User/personalProfile');
-                //param 4 ProPic
-                }elseif($param == 4)
-                {
-                    if(UHTTPMethods::files('imageFile','size') > 0)
-                    {
-                        $uploadedImage = UHTTPMethods::files('imageFile');
-                        $checkUploadImage = self::uploadImage($uploadedImage);
-                        if($checkUploadImage == 'UPLOAD_ERROR_OK' || $checkUploadImage == 'TYPE_ERROR' || $checkUploadImage == 'SIZE_ERROR'){
-
-                            $pm = FPersistentManager::getInstance();
-                            USession::getInstance();
-
-                            $userId = USession::getSessionElement('user');
-                            $user = $pm::retriveObj(EUser::getEntity(), $userId);
-                            $proPic = $pm::retriveObj(EImage::getEntity(), $user->getIdImage());
-
-                            $view->FileError($user, $proPic );
-                        }
-                        else{
-                            $pm::uploadObj($checkUploadImage);
-                            $user->setIdImage($checkUploadImage->getId());
-                            $pm::uploadObj($user);
-                            header('Location: /Agora/User/personalProfile');
-                        }
-                    }else{
-                    header('Location: /Agora/User/settings/0');
-                    }
-                }else{
-                    header('Location: /Agora/User/settings/0');
-                }
+                $userAndPropic = $pm::loadUsersAndImage($userId);    
+                $view->settings($userAndPropic);
+            }else{
+                header('Location: /Agora/User/login');
             }
-            
+    }
+
+    /**
+     * Take the compiled form and use the data for update the user info (Biography, Working, StudeiedAt, Hobby)
+     */
+    public static function setUserInfo(){
+        if(CUser::isLogged()){
+            $pm = FPersistentManager::getInstance();
+            USession::getInstance();
+
+            $userId = USession::getSessionElement('user');
+            $user = $pm::retriveObj(EUser::getEntity(), $userId);
+
+            $user->setBio(UHTTPMethods::post('Bio'));
+            $user->setWorking(UHTTPMethods::post('Working'));                                               
+            $user->setStudiedAt(UHTTPMethods::post('StudiedAt'));
+            $user->setHobby(UHTTPMethods::post('Hobby'));
+            $pm::updateUserInfo($user);
+
+            header('Location: /Agora/User/personalProfile');
         }else{
-            header('Location: /Agora/User/home');
+            header('Location: /Agora/User/login');
         }
     }
 
     /**
-     * check if the Uploaded image is ok and upload it in the database
+     * Take the compiled form, use teh data to cjheck if the username alredy exist and if not update the user Username
      */
-    public static function uploadImage($file){
-        $check = CPost::validateImage($file);
-        if($check[0]){
-            $image = new EImage($file['name'], $file['size'], $file['type'], file_get_contents($file['tmp_name']));
-            return $image;
+    public static function setUsername(){
+        if(CUser::isLogged()){
+            $pm = FPersistentManager::getInstance();
+            USession::getInstance();
+
+            $userId = USession::getSessionElement('user');
+            $user = $pm::retriveObj(EUser::getEntity(), $userId);
+
+            if($user->getUsername() == UHTTPMethods::post('username')){
+                header('Location: /Agora/User/personalProfile');
+            }else{
+                if($pm::verifyUserUsername(UHTTPMethods::post('username')) == false)
+                {
+                    $user->setUsername(UHTTPMethods::post('username'));
+                    $pm::updateUserUsername($user);
+                    header('Location: /Agora/User/personalProfile');
+                }else{
+                    $view = new VUser();
+                    $userAndPropic = $pm::loadUsersAndImage($userId);
+                    $view->usernameError($userAndPropic , true);
+                }
+            }
         }else{
-            return $check[1];
+            header('Location: /Agora/User/login');
+        }
+    }
+
+    /**
+     * Take the compiled form and update the user password
+     */
+    public static function setPassword(){
+        if(CUser::isLogged()){
+            $pm = FPersistentManager::getInstance();
+            USession::getInstance();
+
+            $userId = USession::getSessionElement('user');
+            $user = $pm::retriveObj(EUser::getEntity(), $userId);$newPass = UHTTPMethods::post('password');
+            $user->setPassword($newPass);
+            $pm::updateUserPassword($user);
+
+            header('Location: /Agora/User/personalProfile');
+        }else{
+            header('Location: /Agora/User/login');
+        }
+    }
+
+    /**
+     * Take the file, check if there is an upload error, if not update the user image and delete the old one 
+     */
+    public static function setProPic(){
+        if(CUser::isLogged()){
+            $pm = FPersistentManager::getInstance();
+            USession::getInstance();
+
+            $userId = USession::getSessionElement('user');
+            $user = $pm::retriveObj(EUser::getEntity(), $userId);
+            
+            if(UHTTPMethods::files('imageFile','size') > 0){
+                    $uploadedImage = UHTTPMethods::files('imageFile');
+                        $checkUploadImage = $pm::uploadImage($uploadedImage);
+                        if($checkUploadImage == 'UPLOAD_ERROR_OK' || $checkUploadImage == 'TYPE_ERROR' || $checkUploadImage == 'SIZE_ERROR'){
+                            $view = new VUser();
+                            $userAndPropic = $pm::loadUsersAndImage($userId);
+
+                            $view->FileError($userAndPropic);
+                        }
+                        else{
+                            $idImage = $pm::uploadObj($checkUploadImage);
+                            if($user->getIdImage() != 1){
+                                if($pm::deleteImage($user->getIdImage())){
+                                    $user->setIdImage($idImage);
+                                    $pm::updateUserIdImage($user);
+                                }
+                                header('Location: /Agora/User/personalProfile');
+                            }else{
+                                $user->setIdImage($idImage);
+                                $pm::updateUserIdImage($user);
+                            }
+                            header('Location: /Agora/User/personalProfile');
+                        }
+                    }else{
+                    header('Location: /Agora/User/settings');
+                    }
+        }else{
+            header('Location: /Agora/User/login');
         }
     }
 
     /**
      * load all the post finded by a specifyc category
+     * @param String $category Refers to a name of a category
      */
     public static function category($category)
     {
-        if(UServer::getRequestMethod() == "GET")
-        {
-            if(CUser::isLogged())
-            {
-                $pm = FPersistentManager::getInstance();
-                $view = new VUser();
-                USession::getInstance();
-                $userId = USession::getSessionElement('user');
-                $user = $pm::retriveObj(EUser::getEntity(), $userId);
-                $proPic = $pm::retriveObj(EImage::getEntity(), $user->getIdImage());
-                //load the VIP Users and their profile Images
-                $vipUsers = $pm::loadVip();
-                $vipPic = array();
-                $vipFollower = array();
-            
+        if(CUser::isLogged()){
+            $pm = FPersistentManager::getInstance();
+            USession::getInstance();
+            $view = new VUser();
+        
+            $userId = USession::getSessionElement('user');
+            $userAndPropic = $pm::loadUsersAndImage($userId);
 
-                foreach($vipUsers as $v)
-                {
-                    //associative array for the Vip's images
-                    $vipPic[$v->getId()] = $pm::retriveObj(EImage::getEntity(), $v->getIdImage());
-                    //associative array for Vip's followers number
-                    $vipFollower[$v->getId()] = $pm::getFollowerNumb($v->getId());
-                }
+            //load the VIP Users, their profile Images and the foillower number
+            $arrayVipUserPropicFollowNumb = $pm::loadVip();
 
-                $postCategory = $pm::loadPostPerCategory($category);
+            $postCategory = $pm::loadPostPerCategory($category);
 
-                if(count($postCategory) > 0)
-                {
-                    foreach($postCategory as $p)
-                    {
-                        $usersPic[$p->getUser()->getId()] = $pm::retriveObj(EImage::getEntity(), $p->getUser()->getIdImage());
-                    }
-                    $view->category($user, $proPic, $postCategory, $usersPic, $vipUsers, $vipPic, $vipFollower);
-                }else{
-                    $view->category($user, $proPic, null,null, $vipUsers, $vipPic, $vipFollower);
-                }
-            }else{
-                header('Location: /Agora/User/login');
-            }
+            $view->category($userAndPropic, $postCategory, $arrayVipUserPropicFollowNumb);
         }else{
-            header('Location: /Agora/User/home');
+            header('Location: /Agora/User/login');
         }
     }
 
@@ -495,157 +372,100 @@ class CUser{
      */
     public static function explore()
     {
-        if(UServer::getRequestMethod() == "GET")
-        {
-            if(CUser::isLogged())
-            {
-                $pm = FPersistentManager::getInstance();
-                $view = new VUser();
-                USession::getInstance();
-                $userId = USession::getSessionElement('user');
-                $user = $pm::retriveObj(EUser::getEntity(), $userId);
-                $proPic = $pm::retriveObj(EImage::getEntity(), $user->getIdImage());
-                //load the VIP Users and their profile Images
-                $vipUsers = $pm::loadVip();
-                $vipPic = array();
-                $vipFollower = array();
-            
+        if(CUser::isLogged()){
+            $pm = FPersistentManager::getInstance();
+            USession::getInstance();
+            $view = new VUser();
+                
+            $userId = USession::getSessionElement('user');
+            $userAndPropic = $pm::loadUsersAndImage($userId);
 
-                foreach($vipUsers as $v)
-                {
-                    //associative array for the Vip's images
-                    $vipPic[$v->getId()] = $pm::retriveObj(EImage::getEntity(), $v->getIdImage());
-                    //associative array for Vip's followers number
-                    $vipFollower[$v->getId()] = $pm::getFollowerNumb($v->getId());
-                }
+            ///load the VIP Users, their profile Images and the foillower number
+            $arrayVipUserPropicFollowNumb = $pm::loadVip();
 
-                $postExplore = $pm::loadPostInExplore($user->getId());
+            $postExplore = $pm::loadPostInExplore($userId);
 
-                if(count($postExplore) > 0)
-                {
-                    foreach($postExplore as $p)
-                    {
-                        //asscoiative array for the users profile pic 
-                        $usersPic[$p->getUser()->getId()] = $pm::retriveObj(EImage::getEntity(), $p->getUser()->getIdImage());
-                    }
-                    $view->explore($user, $proPic, $postExplore, $usersPic, $vipUsers, $vipPic, $vipFollower);
-                }else{
-                    $view->explore($user, $proPic, null,null, $vipUsers, $vipPic, $vipFollower);
-                }
-            }else{
-                header('Location: /Agora/User/login');
-            }
+                
+            $view->explore($userAndPropic, $postExplore, $arrayVipUserPropicFollowNumb);
         }else{
-            header('Location: /Agora/User/home');
+            header('Location: /Agora/User/login');
         }
     }
 
     /**
      * return a page with a list of Users who are followed by the User logged 
+     * @param int $idUser Refers to the id of a user
      */
     public static function followers($idUser)
     {
-        if(UServer::getRequestMethod() == "GET")
-        {
-            if(CUser::isLogged())
-            {
-                $pm = FPersistentManager::getInstance();
-                $userList = $pm::getFollowedList($idUser);
-                $usersPic = array();
-                foreach($userList as $u)
-                {
-                    $pic = $pm::retriveObj(EImage::getEntity(), $u->getIdImage());
-                    $usersPic[$u->getId()] = $pic;
-                }
-                $view = new VManagePost();
-                $view->showUsersList($userList, $usersPic, 'followers');
+        if(CUser::isLogged()){
+            $pm = FPersistentManager::getInstance();
+            $usersListAndPropic = $pm::getFollowedList($idUser);
+                
+            $view = new VManagePost();
+            $view->showUsersList($usersListAndPropic, 'followers');
 
-            }else{
-                header('Location: /Agora/User/login');
-            }
         }else{
-            header('Location: /Agora/User/home');
-        }
+            header('Location: /Agora/User/login');
+        }        
     }
 
     /**
      * return a page with a list of Users who are following the User logged 
+     * @param int $idUser Refers to the id of a user
      */
     public static function followed($idUser)
     {
-        if(UServer::getRequestMethod() == "GET")
-        {
-            if(CUser::isLogged())
-            {
-                $pm = FPersistentManager::getInstance();
-                $userList = $pm::getFollowerList($idUser);
-                $usersPic = array();
-                foreach($userList as $u)
-                {
-                    $pic = $pm::retriveObj(EImage::getEntity(), $u->getIdImage());
-                    $usersPic[$u->getId()] = $pic;
-                }
-                $view = new VManagePost();
-                $view->showUsersList($userList, $usersPic, 'followed');
-
-            }else{
-                header('Location: /Agora/User/login');
-            }
+        if(CUser::isLogged()){
+            $pm = FPersistentManager::getInstance();
+            $usersListAndPropic = $pm::getFollowerList($idUser);
+                
+            $view = new VManagePost();
+            $view->showUsersList($usersListAndPropic, 'followed');
         }else{
-            header('Location: /Agora/User/home');
+            header('Location: /Agora/User/login');
         }
     }
 
     /**
      * method to follow a user, the check is in the profile() method
+     * @param int $followerId Refers to the id of a user
      */
     public static function follow($followedId)
     {
-        if(UServer::getRequestMethod() == "POST")
-        {
-            if(CUser::isLogged())
-            {
-                $pm = FPersistentManager::getInstance();
+        if(CUser::isLogged()){
+            $pm = FPersistentManager::getInstance();
+            USession::getInstance();
 
-                USession::getInstance();
-                $userId = USession::getSessionElement('user');
+            $userId = USession::getSessionElement('user');
 
-                //new Follow Object
-                $follow = new EUserFollow($userId, $followedId);
-                $pm::uploadObj($follow);
-                $visitedUser = $pm::retriveObj(EUser::getEntity(), $followedId);
-                header('Location: /Agora/User/profile/' . $visitedUser->getUsername());
-            }else{
-                header('Location: /Agora/User/login');
-            }
+            //new Follow Object
+            $follow = new EUserFollow($userId, $followedId);
+            $pm::uploadObj($follow);
+            $visitedUser = $pm::retriveObj(EUser::getEntity(), $followedId);
+            header('Location: /Agora/User/profile/' . $visitedUser->getUsername());
         }else{
-            header('Location: /Agora/User/home');
-        }
+            header('Location: /Agora/User/login');
+        }        
     }
 
     /**
      * method to unfollow a user, the check is in the profile() method
+     * @param int $followedId Refers to the id of a user
      */
     public static function unfollow($followedId)
     {
-        if(UServer::getRequestMethod() == "POST")
-        {
-            if(CUser::isLogged())
-            {
-                $pm = FPersistentManager::getInstance();
+        if(CUser::isLogged()){
+            $pm = FPersistentManager::getInstance();
+            USession::getInstance();
 
-                USession::getInstance();
-                $userId = USession::getSessionElement('user');
+            $userId = USession::getSessionElement('user');
 
-                $follow = $pm::retriveFollow($userId, $followedId);
-                $pm::deleteFollow($follow);
-                $visitedUser = $pm::retriveObj(EUser::getEntity(), $followedId);
-                header('Location: /Agora/User/profile/' . $visitedUser->getUsername());
-            }else{
-                header('Location: /Agora/User/login');
-            }
+            $pm::deleteFollow($userId, $followedId);
+            $visitedUser = $pm::retriveObj(EUser::getEntity(), $followedId);
+            header('Location: /Agora/User/profile/' . $visitedUser->getUsername());
         }else{
-            header('Location: /Agora/User/home');
-        }
+            header('Location: /Agora/User/login');
+        }    
     }
 }

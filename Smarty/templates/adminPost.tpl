@@ -63,7 +63,7 @@
                     <p><a href="/Agora/Moderator/visitUser/{$post->getUser()->getId()}"style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$post->getUser()->getUsername()}</a><span class="harsh-tag">
             {$post->getDescription()}</span></p>
                 </div>
-                {if $post->getImages()->count() === 0}
+                {if count($post->getImages()) === 0}
 
                 {else}
                     <div class="photo">
@@ -77,7 +77,7 @@
         </div>
 
         <div>
-            <form id='ban' action="/Agora/Moderator/ban/post/{$post->getId()}" method="post">
+            <form id='ban' action="/Agora/Moderator/banPost/{$post->getId()}/{$post->getUser()->getId()}" method="post">
                 <button class="btn btn-primary "><i class="uil uil-trash-alt">Ban</i></button>
             </form>
         </div>

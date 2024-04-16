@@ -3,33 +3,22 @@
 class CComment{
 
     /**
-     * method to report a comment
+     * create a comment taking info from the compiled form and associate it to the post
+     * @param int $idPost Refers to id of the post
      */
-    public static function report($id)
-    {
-        if(UServer::getRequestMethod() == 'POST')
-        {
-            if(CUser::isLogged())
-            {
-                $pm = FPersistentManager::getInstance();
-                USession::getInstance();
-                $idUser = USession::getSessionElement('user');
+    public static function createComment($idPost){
+        if(CUser::isLogged()){
+            $pm = FPersistentManager::getInstance();
+            USession::getInstance();
 
-                $reportedComment = $pm::retriveObj(EComment::getEntity(), $id);
-            if($reportedComment !== null)
-            {
-                //create a new Report Obj and persist it
-                $report = new EReport('', 'linguaggio scurrile', $idUser);
-                $pm::uploadObj($report);
-                $report->setComment($reportedComment);
-                $pm::uploadObj($report);
-            }
-            header('Location: /Agora/User/home');
-            }else{
-                header('Location: /Agora/User/login');
-            }
+            $userId = USession::getSessionElement('user');
+            $user = $pm::retriveObj(EUser::getEntity(), $userId);
+
+            $comment = new EComment(UHTTPMethods::post('body'), $user, $idPost);              //TODO
+            $pm::uploadObj($comment);
+            header('Location: /Agora/Post/visit/'. $idPost);
         }else{
-            header('Location: /Agora/User/home');
+            header('Location: /Agora/User/login');
         }
     }
 }

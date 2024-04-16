@@ -76,6 +76,10 @@ use Doctrine\ORM\Mapping as ORM;
         return $this->idReport;
     }
 
+    public function setId($id){
+        $this->idReport = $id;
+    }
+
     public function getPost()
     {
         return $this->post;

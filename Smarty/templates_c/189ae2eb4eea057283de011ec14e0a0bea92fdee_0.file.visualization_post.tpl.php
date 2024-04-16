@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2023-09-11 17:26:47
+/* Smarty version 3.1.33, created on 2024-04-13 22:46:16
   from 'C:\xampp\htdocs\Agora\Smarty\templates\visualization_post.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_64ff31b7dcb4d9_35117183',
+  'unifunc' => 'content_661aef1855eea0_86264304',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '189ae2eb4eea057283de011ec14e0a0bea92fdee' => 
     array (
       0 => 'C:\\xampp\\htdocs\\Agora\\Smarty\\templates\\visualization_post.tpl',
-      1 => 1694446005,
+      1 => 1713041164,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_64ff31b7dcb4d9_35117183 (Smarty_Internal_Template $_smarty_tpl) {
+function content_661aef1855eea0_86264304 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!DOCTYPE html>
 <?php $_smarty_tpl->_assignInScope('userlogged', (($tmp = @$_smarty_tpl->tpl_vars['userlogged']->value)===null||$tmp==='' ? 'nouser' : $tmp));?>
 <html lang="en">
@@ -136,12 +136,12 @@ function content_64ff31b7dcb4d9_35117183 (Smarty_Internal_Template $_smarty_tpl)
           <span> <i class="uil uil-palette"></i></span>Theme
       </label>
       <label class="menu-items tex-bold " >
-          <button class="btn-transparent" onclick="location.href='/Agora/User/settings/0'"><i class="uil uil-setting"></i> </button>Setting
+          <button class="btn-transparent" onclick="location.href='/Agora/User/settings'"><i class="uil uil-setting"></i> </button>Setting
       </label>
   </div>
   <!--------------------END OF SIDE BAR----------------->
   <label class="btn btn-primary">create post
-      <button class="btn-transparent" onclick="location.href='/Agora/Post/createPost'"></button>
+      <button class="btn-transparent" onclick="location.href='/Agora/Post/postForm'"></button>
   </label>
 </div>
 
@@ -182,7 +182,7 @@ function content_64ff31b7dcb4d9_35117183 (Smarty_Internal_Template $_smarty_tpl)
             <?php echo $_smarty_tpl->tpl_vars['post']->value->getDescription();?>
 </span></p>
         </div>
-        <?php if ($_smarty_tpl->tpl_vars['post']->value->getImages()->count() === 0) {?>
+        <?php if (count($_smarty_tpl->tpl_vars['post']->value->getImages()) === 0) {?>
             
           <?php } else { ?>
             <div class="photo">
@@ -236,7 +236,7 @@ for ($_foo=true;$_smarty_tpl->tpl_vars['i']->value < 3; $_smarty_tpl->tpl_vars['
 ?>
             <!-- Smarty tag for username --> 
             <p> liked by <a href="/Agora/Post/like/<?php echo $_smarty_tpl->tpl_vars['post']->value->getId();?>
-" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold"><?php echo $_smarty_tpl->tpl_vars['likeNumb']->value;?>
+" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold"><?php echo $_smarty_tpl->tpl_vars['numericInfo']->value[0];?>
  user</a> </p>
         </div>
 
@@ -256,10 +256,10 @@ foreach ($_from as $_smarty_tpl->tpl_vars['comment']->value) {
               <div class="comment">
                 <div class="head">
                   <div class="user">
-                  <?php if ($_smarty_tpl->tpl_vars['commentsPic']->value[$_smarty_tpl->tpl_vars['comment']->value->getUser()->getId()]->getSize() > 0) {?>
+                  <?php if ($_smarty_tpl->tpl_vars['comment']->value[1]->getSize() > 0) {?>
                     <div class="profile-photo">  
-                        <img src="data:<?php echo $_smarty_tpl->tpl_vars['commentsPic']->value[$_smarty_tpl->tpl_vars['comment']->value->getUser()->getId()]->getType();?>
-;base64,<?php echo $_smarty_tpl->tpl_vars['commentsPic']->value[$_smarty_tpl->tpl_vars['comment']->value->getUser()->getId()]->getEncodedData();?>
+                        <img src="data:<?php echo $_smarty_tpl->tpl_vars['comment']->value[1]->getType();?>
+;base64,<?php echo $_smarty_tpl->tpl_vars['comment']->value[1]->getEncodedData();?>
 " alt="Img">
                     </div>
                   <?php } else { ?>
@@ -268,26 +268,26 @@ foreach ($_from as $_smarty_tpl->tpl_vars['comment']->value) {
                     </div>
                   <?php }?>
                     <div class="ingo">
-                    <?php if ($_smarty_tpl->tpl_vars['comment']->value->getUser()->isVip()) {?>
-                      <a href="/Agora/User/profile/<?php echo $_smarty_tpl->tpl_vars['comment']->value->getUser()->getUsername();?>
-"class="vip"> <?php echo $_smarty_tpl->tpl_vars['comment']->value->getUser()->getUsername();?>
+                    <?php if ($_smarty_tpl->tpl_vars['comment']->value[0]->getUser()->isVip()) {?>
+                      <a href="/Agora/User/profile/<?php echo $_smarty_tpl->tpl_vars['comment']->value[0]->getUser()->getUsername();?>
+"class="vip"> <?php echo $_smarty_tpl->tpl_vars['comment']->value[0]->getUser()->getUsername();?>
 <i class='uil uil-star' style='font-size:medium'></i> </a>
                     <?php } else { ?>
-                      <a href="/Agora/User/profile/<?php echo $_smarty_tpl->tpl_vars['comment']->value->getUser()->getUsername();?>
-" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold"> <?php echo $_smarty_tpl->tpl_vars['comment']->value->getUser()->getUsername();?>
+                      <a href="/Agora/User/profile/<?php echo $_smarty_tpl->tpl_vars['comment']->value[0]->getUser()->getUsername();?>
+" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold"> <?php echo $_smarty_tpl->tpl_vars['comment']->value[0]->getUser()->getUsername();?>
 </a>
                     <?php }?>
-                      <small><?php echo $_smarty_tpl->tpl_vars['comment']->value->getTime()->format('Y-m-d H:i:s');?>
+                      <small><?php echo $_smarty_tpl->tpl_vars['comment']->value[0]->getTime()->format('Y-m-d H:i:s');?>
 </small>
                     </div>
                   </div>
 
                   <div class="body-comment">
-                    <b><?php echo $_smarty_tpl->tpl_vars['comment']->value->getBody();?>
+                    <b><?php echo $_smarty_tpl->tpl_vars['comment']->value[0]->getBody();?>
 </b>
                   </div>
                 </div>
-                <form id="report" action="/Agora/Comment/report/<?php echo $_smarty_tpl->tpl_vars['comment']->value->getId();?>
+                <form id="report" action="/Agora/Comment/report/<?php echo $_smarty_tpl->tpl_vars['comment']->value[0]->getId();?>
 " method="post">
                       <button class="btn btn-transparent" id="delete"><i class="uil uil-exclamation-triangle" style="color:red"></i></button>
                 </form>
@@ -298,7 +298,7 @@ foreach ($_from as $_smarty_tpl->tpl_vars['comment']->value) {
 $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
 
             <div class="send-comment">
-              <form id="comment-post"  action="/Agora/Post/visit/<?php echo $_smarty_tpl->tpl_vars['post']->value->getId();?>
+              <form id="comment-post"  action="/Agora/Comment/createComment/<?php echo $_smarty_tpl->tpl_vars['post']->value->getId();?>
 "  method="post">
               <label class="left-transition ">
                 <input type="text" name ='body'placeholder="write a comment" required>
@@ -346,7 +346,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
           </div>
           <div>
             <a href="/Agora/User/followed/<?php echo $_smarty_tpl->tpl_vars['post']->value->getUser()->getId();?>
-" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold"><?php echo $_smarty_tpl->tpl_vars['followerNumb']->value;?>
+" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold"><?php echo $_smarty_tpl->tpl_vars['numericInfo']->value[1];?>
 </a>
             <p class="text-muted">
               followers
@@ -354,7 +354,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
           </div>
           <div>
           <a href="/Agora/User/followers/<?php echo $_smarty_tpl->tpl_vars['post']->value->getUser()->getId();?>
-" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold"><?php echo $_smarty_tpl->tpl_vars['followedNumb']->value;?>
+" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold"><?php echo $_smarty_tpl->tpl_vars['numericInfo']->value[2];?>
 </a>
             <p class="text-muted">following</p>
           </div>

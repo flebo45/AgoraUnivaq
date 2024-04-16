@@ -65,9 +65,9 @@
   {foreach $searchedPost as $post}
       <div style="padding:1.5rem">
       <div class="profile">
-        {if $postUserPic[$post->getId()]->getSize() > 0}
+        {if $post[1]->getSize() > 0}
           <div class="profile-photo">
-            <img src="data:{$postUserPic[$post->getId()]->getType()};base64,{$postUserPic[$post->getId()]->getEncodedData()}" alt="Img">
+            <img src="data:{$post[1]->getType()};base64,{$post[1]->getEncodedData()}" alt="Img">
           </div>
         {else}
           <div class="profile-photo">
@@ -75,19 +75,19 @@
           </div>
         {/if}
         <div class ="handle">
-        {if $post->getUser()->isVip()}
-          <a  href="/Agora/User/profile/{$post->getUser()->getUsername()}" class="vip"> {$post->getUser()->getUsername()}</a> <i class='uil uil-star vip'></i>
+        {if $post[0]->getUser()->isVip()}
+          <a  href="/Agora/User/profile/{$post[0]->getUser()->getUsername()}" class="vip"> {$post[0]->getUser()->getUsername()}</a> <i class='uil uil-star vip'></i>
         {else}
-          <a  href="/Agora/User/profile/{$post->getUser()->getUsername()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$post->getUser()->getUsername()}</a>
+          <a  href="/Agora/User/profile/{$post[0]->getUser()->getUsername()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$post[0]->getUser()->getUsername()}</a>
         {/if}
           <p class="text-muted">
-            @{$post->getuser()->getName()}
+            @{$post[0]->getuser()->getName()}
           </p>
         </div>
       </div>
       <div>
       <h5 class="text-muted">Title:</h5>
-        <a href="/Agora/Post/visit/{$post->getId()}" class="search" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold"> {$post->getTitle()}</a>
+        <a href="/Agora/Post/visit/{$post[0]->getId()}" class="search" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold"> {$post[0]->getTitle()}</a>
           </div>
         
     </div>
@@ -106,9 +106,9 @@
       <div class="list-profile">
           
         <div class="profile">
-            {if $userPic[$user->getId()]->getSize() > 0}
+            {if $user[1]->getSize() > 0}
               <div class="profile-photo">
-                <img src="data:{$userPic[$user->getId()]->getType()};base64,{$userPic[$user->getId()]->getEncodedData()}" alt="Img">
+                <img src="data:{$user[1]->getType()};base64,{$user[1]->getEncodedData()}" alt="Img">
               </div>
             {else}
               <div class="profile-photo">
@@ -116,13 +116,13 @@
               </div>
             {/if}
             <div class ="handle">
-            {if $user->isVip()}
-              <a  href="/Agora/User/profile/{$user->getUsername()}" class="vip"> {$user->getUsername()}</a> <i class='uil uil-star vip'></i>
+            {if $user[0]->isVip()}
+              <a  href="/Agora/User/profile/{$user[0]->getUsername()}" class="vip"> {$user[0]->getUsername()}</a> <i class='uil uil-star vip'></i>
           {else}
-              <a  href="/Agora/User/profile/{$user->getUsername()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$user->getUsername()}</a>
+              <a  href="/Agora/User/profile/{$user[0]->getUsername()}" style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$user[0]->getUsername()}</a>
           {/if}
               <p class="text-muted">
-                @{$user->getName()}
+                @{$user[0]->getName()}
               </p>
             </div>
           </div>

@@ -64,7 +64,7 @@
           <span> <i class="uil uil-palette"></i></span>Theme
         </label>
         <label class="menu-items active tex-bold " >
-          <button class="btn-transparent" onclick="location.href='/Agora/User/settings/0'"><i class="uil uil-setting"></i> </button>Setting
+          <button class="btn-transparent" onclick="location.href='/Agora/User/settings'"><i class="uil uil-setting"></i> </button>Setting
         </label>
       </div>
       <!--------------------END OF SIDE BAR----------------->
@@ -78,7 +78,7 @@
 
 
     <div class="box-setting">
-    <form enctype="multipart/form-data" action="/Agora/User/settings/4" method="post" >
+    <form enctype="multipart/form-data" action="/Agora/User/setProPic" method="post" >
     {if $userPic->getSize() > 0}
       <div class="profile-photo">  
           <img src="data:{$userPic->getType()};base64,{$userPic->getEncodedData()}" alt="Img">
@@ -102,7 +102,7 @@
       </div>
 
     </form>
-    <form enctype="multipart/form-data" action="/Agora/User/settings/1" method="post" >
+    <form enctype="multipart/form-data" action="/Agora/User/setUserInfo" method="post" >
       <div class="info-profile">
         <h4 class="tex-bold" >Biography</h4>
         <label>
@@ -130,7 +130,7 @@
           </label>
         </div>
         </form>
-        <form enctype="multipart/form-data" action="/Agora/User/settings/2" method="post" >
+        <form enctype="multipart/form-data" action="/Agora/User/setUsername" method="post" >
         <h4 class="tex-bold" >UserName</h4>
           {if $error == true}
           <div style="color: red ; margin-left: 4%">Username already taken</div>
@@ -145,7 +145,7 @@
           <button type="reset" class="btn btn-primary">Delete</button>
         </label>
       </form>
-      <form enctype="multipart/form-data" action="/Agora/User/settings/3" method="post" >
+      <form enctype="multipart/form-data" action="/Agora/User/setPassword" method="post" >
         <h4 class="tex-bold">Password</h4>
         <label>
           <input type="password" id="password" class="text" name="password" placeholder="NewPassword">

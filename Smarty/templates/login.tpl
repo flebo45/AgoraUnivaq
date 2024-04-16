@@ -42,7 +42,7 @@
         {if $regErr == true}
           <p style="color: red; margin-left: 7%">email or username is already taken</p>
           {/if}
-      <form id="login" class="input-group" action="/Agora/User/login" method="post">
+      <form id="login" class="input-group" action="/Agora/User/checkLogin" method="post">
         <label>
           <input type="text" class="input-field" placeholder="Enter Username" name="username" required>
         </label>

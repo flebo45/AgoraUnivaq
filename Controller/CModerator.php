@@ -23,52 +23,45 @@ class CModerator{
 
     
     /**
-     * check the request, if the Mod have the session cookie(isLogged()) return the Mod in the home page, if not and request is in POST 
-     * start the checkLogin() to start the login process
+     * check the request, if the Mod have the session cookie(isLogged()) return the Mod in the home page, if not shw the login form 
+     * 
      * @return void
      */
     public static function login()
     {
-        if(UServer::getRequestMethod() == "GET"){
-            if(self::isLogged()){
-                header('Location: /Agora/Moderator/reportList');
-            }else{
-                $view = new VModerator();
-                $view->showLoginForm();
-            }
-           }
-           elseif(UServer::getRequestMethod() == "POST"){
-            self::checkLogin();
-           }
+        if(self::isLogged()){
+            header('Location: /Agora/Moderator/reportList');
+        }else{
+            $view = new VModerator();
+            $view->showLoginForm();
+        }   
     }
 
     
     /**
-     * check if exist teh Username inserted, and for this username check the password. If is everything correct the session is created and
+     * check if exist the Username inserted, and for this username check the password. If is everything correct the session is created and
      * the Mod is redirected in the homepage
      */
     public static function checkLogin()
     {
-        if(UServer::getRequestMethod() != 'GET'){
-            $pm = FPersistentManager::getInstance();
-            $view = new VModerator();
-            $username = $pm::verifyUserUsername(UHTTPMethods::post('username'));                //TODO
-            if($username){
-                $user = $pm::retriveModOnUsername(UHTTPMethods::post('username'));
-                if(password_verify(UHTTPMethods::post('password'), $user->getPassword())){
-                    if(USession::getSessionStatus() == PHP_SESSION_NONE){
-                        USession::getInstance();
-                        USession::setSessionElement('mod', $user->getId());
-                        header('Location: /Agora/Moderator/reportList');
-                        }
-                    }else{
-                        $view->loginError();
+        $pm = FPersistentManager::getInstance();
+        $view = new VModerator();
+        $username = $pm::verifyUserUsername(UHTTPMethods::post('username'));
+        if($username){
+            $user = $pm::retriveModOnUsername(UHTTPMethods::post('username'));
+            if(password_verify(UHTTPMethods::post('password'), $user->getPassword())){
+                if(USession::getSessionStatus() == PHP_SESSION_NONE){
+                    USession::getInstance();
+                    USession::setSessionElement('mod', $user->getId());
+                    header('Location: /Agora/Moderator/reportList');
                     }
                 }else{
                     $view->loginError();
                 }
+            }else{
+                $view->loginError();
             }
-        }
+    }
     
 
     
@@ -88,92 +81,90 @@ class CModerator{
      */
     public static function reportList()
     {
-        if(UServer::getRequestMethod() == 'GET')
-        {
-            if(CModerator::isLogged())
-            {
-                $pm = FPersistentManager::getInstance();
+        
+        if(CModerator::isLogged()){
+            $pm = FPersistentManager::getInstance();
 
-                USession::getInstance();
-                $modId = USession::getSessionElement('mod');
+            USession::getInstance();
+            $modId = USession::getSessionElement('mod');
 
-                $mod = $pm::retriveObj(EModerator::getEntity(), $modId);
+            $mod = $pm::retriveObj(EModerator::getEntity(), $modId);
 
-                $reportedPost = $pm::getReportedPost();
-                $reportedComment = $pm::getReportedComment();
+            $reportedPost = $pm::getReportedPost();
+            $reportedComment = $pm::getReportedComment();
 
-                $view = new VModerator();
+            $view = new VModerator();
 
-                $view->showReportList($mod->getUsername(), $reportedPost,  $reportedComment);
-            }else{
-                header('Location: /Agora/Moderator/login');
-            }
+            $view->showReportList($mod->getUsername(), $reportedPost,  $reportedComment);
         }else{
-            header('Location: /Agora/Moderator/reportList');
+            header('Location: /Agora/Moderator/login');
         }
     }
 
     /**
-     * with this method the Moderator can ban an User or Post or Comment. The ban delete all the related reports to the banned object
+     * with this method the Moderator can ban an User. The ban delete all the related reports to the banned object
+     * @param int $idUser Refers to the id of the user to ban
      */
-    public static function ban($param, $id)
-    {
-        if(UServer::getRequestMethod() == 'POST')
-        {
-            if(CModerator::isLogged())
-            {
-                $pm = FPersistentManager::getInstance();
 
-                if($param == 'user')
-                {
-                    $user = $pm::retriveObj(EUser::getEntity(), $id);
-                    if($user !== null)
-                    {
-                        $user->setBan(true);
-                        $pm::uploadObj($user);
-                        //self::sendBanEmail($user, 'ban');
-                    }
-                }
-                elseif($param == 'post')
-                {
-                    $post = $pm::retriveObj(EPost::getEntity(), $id);
-                    if($post !== null)
-                    {
-                        $post->setBan(true);
-                        $pm::uploadObj($post);
-                        //self::sendBanEmail($post, 'post');
-                        $pm::deleteRelatedReports($param, $id);
-
-                        //setWarnings update the warnings adding 1
-                        $post->getUser()->setWarnings();
-                        $pm::uploadObj($post->getUser());
-
-                        //if the warnings are 3 the user is banned
-                        if($post->getUser()->getWarnings() == 3)
-                        {
-                            $post->getUser()->setBan(true);
-                            $pm::uploadObj($post->getUser());
-                            //self::sendBanEmail($post->getUser(), 'ban');
-                        }
-                    }
-                }
-                elseif($param == 'comment')
-                {
-                    $comment = $pm::retriveObj(EComment::getEntity(), $id);
-                    if($comment !== null)
-                    {
-                        $comment->setBan(true);
-                        $pm::uploadObj($comment);
-                        //self::sendBanEmail($comment, 'comment');
-                        $pm::deleteRelatedReports($param, $id);
-                    }
-                }
+    public static function banUser($idUser){
+        if(CModerator::isLogged()){
+            $pm = FPersistentManager::getInstance();
+            $user = $pm::retriveObj(EUser::getEntity(), $idUser);
+            if($user !== null){
+                $user->setBan(true);
+                $pm::updateUserBan($user);
                 header('Location: /Agora/Moderator/reportList');
-            }else{
-                header('Location: /Agora/Moderator/login');
             }
         }else{
+            header('Location: /Agora/Moderator/login');
+        }
+    }
+
+    /**
+     * with this method the Moderator can ban a Post. The ban delete all the related reports to the banned object
+     * @param int $idPost Refers to the post to ban
+     * @param int $idUser Refrs to the user who chreate the post 
+     */
+    public static function banPost($idPost, $idUser){
+        if(CModerator::isLogged()){
+            $pm = FPersistentManager::getInstance();
+            $post = $pm::retriveObj(EPost::getEntity(), $idPost);
+            if($post !== null){
+                $post[0]->setBan(true);
+                $pm::updatePostBan($post[0]);
+                $pm::deleteRelatedReports($idPost, 'idPost');
+
+                $user = $pm::retriveObj(EUser::getEntity(), $idUser);
+                $user->setWarnings();
+                $pm::updateUserWarnings($user);
+
+                if($user->getWarnings() == MAX_WARNINGS){
+                    $user->setBan(true);
+                    $pm::updateUserBan($user);
+                }
+                header('Location: /Agora/Moderator/reportList');
+            }
+        }else{
+            header('Location: /Agora/Moderator/login');
+        }
+    }
+
+    /**
+     * with this method the Moderator can ban a  Commment. The ban delete all the related reports to the banned object
+     * @param int $idComment Refers to the comment to ban
+     */
+    public static function banComment($idComment){
+        if(CModerator::isLogged()){
+            $pm = FPersistentManager::getInstance();
+            $comment = $pm::retriveObj(EComment::getEntity(), $idComment);
+            if($comment !== null){
+                $comment->setBan(true);
+                $pm::updateCommentBan($comment);
+                $pm::deleteRelatedReports($idComment, 'idComment');
+            }
             header('Location: /Agora/Moderator/reportList');
+        }else{
+            header('Location: /Agora/Moderator/login');
         }
     }
 
@@ -206,100 +197,83 @@ class CModerator{
     }
 
     /**
-     * With this method the Moderato ignore the Report, so it will be delated
+     * With this method the Moderator ignore the Report, so it will be delated
+     * @param int $id Refres to id of the report to delete
      */
     public static function ignore($id)
     {
-        if(UServer::getRequestMethod() == 'POST')
-        {
-            if(CModerator::isLogged())
-            {
-                $pm = FPersistentManager::getInstance();
+        if(CModerator::isLogged()){
+            $pm = FPersistentManager::getInstance();
 
-                $report = $pm::retriveObj(EReport::getEntity(), $id);
-                if($report !== null)
-                {
-                    $pm::deleteReport($report);
-                }
-                header('Location: /Agora/Moderator/reportList');
-            }else{
-                header('Location: /Agora/Moderator/login');
+            $report = $pm::retriveObj(EReport::getEntity(), $id);
+            if($report !== null){
+                $pm::deleteRelatedReports($id);
             }
-        }else{
             header('Location: /Agora/Moderator/reportList');
+        }else{
+            header('Location: /Agora/Moderator/login');
         }
     }
 
     /**
-     * this method show the user page in the Moderator view 
+     * this method show the user page in the Moderator view
+     * @param int $id Refers to the id of the user to visit
      */
     public static function visitUser($id)
     {
-        if(UServer::getRequestMethod() == 'GET')
-        {
-            if(CModerator::isLogged())
-            {
-                $pm = FPersistentManager::getInstance();
 
-                USession::getInstance();
-                $modId = USession::getSessionElement('mod');
-                $mod = $pm::retriveObj(EModerator::getEntity(), $modId);
-                $modUsername = $mod->getUsername();
+        if(CModerator::isLogged()){
+            $pm = FPersistentManager::getInstance();
+            USession::getInstance();
 
-                $user = $pm::retriveObj(EUser::getEntity(), $id);
-                if($user !== null)
-                {
-                    $userPic = $pm::retriveObj(EImage::getEntity(), $user->getIdImage());
+            $modId = USession::getSessionElement('mod');
+            $mod = $pm::retriveObj(EModerator::getEntity(), $modId);
+            $modUsername = $mod->getUsername();
 
-                    $userPosts = $pm::loadUserPage($id);
+            $user = $pm::retriveObj(EUser::getEntity(), $id);
+            if(!is_array($user)){
+                $userAndPropic = $pm::loadUsersAndImage($id);
 
-                    $followerNumb = $pm::getFollowerNumb($id);
-                    $followedNumb = $pm::getFollowedNumb($id);
+                $userPosts = $pm::loadUserPage($id);
 
-                    $view = new VModerator();
-                    $view->visitUser($user, $userPic, $userPosts, $followerNumb, $followedNumb, $modUsername);
-                }else{
-                    header('Location: /Agora/Moderator/reportList');
-                }  
+                $followerNumb = $pm::getFollowerNumb($id);
+                $followedNumb = $pm::getFollowedNumb($id);
+
+                $view = new VModerator();
+                $view->visitUser($userAndPropic, $userPosts, $followerNumb, $followedNumb, $modUsername);
             }else{
-                header('Location: /Agora/Moderator/login');
-            }
+                header('Location: /Agora/Moderator/reportList');
+            }  
         }else{
-            header('Location: /Agora/Moderator/reportList');
-        }
+            header('Location: /Agora/Moderator/login');
+        }        
     }
 
     /**
      * this method show the Post in the Moderator view
+     * @param int $id Refers to the id of the post to visit
      */
     public static function visitPost($id)
     {
-        if(UServer::getRequestMethod() == 'GET')
-        {
-            if(CModerator::isLogged())
-            {
-                $pm = FPersistentManager::getInstance();
+        if(CModerator::isLogged()){
+            $pm = FPersistentManager::getInstance();
+            USession::getInstance();
 
-                USession::getInstance();
-                $modId = USession::getSessionElement('mod');
-                $mod = $pm::retriveObj(EModerator::getEntity(), $modId);
-                $modUsername = $mod->getUsername();
+            $modId = USession::getSessionElement('mod');
+            $mod = $pm::retriveObj(EModerator::getEntity(), $modId);
+            $modUsername = $mod->getUsername();
 
-                $post = $pm::retriveObj(EPost::getEntity(), $id);
-                if($post !== null)
-                {
-                    $userPic = $pm::retriveObj(EImage::getEntity(), $post->getUser()->getIdImage());
+            $post = $pm::loadPostInVisited($id);
+            if(!is_array($post)){
+                $userAndProPic = $pm::loadUsersAndImage($post->getUser()->getId());
 
-                    $view = new VModerator();
-                    $view->visitPost($post, $userPic, $modUsername);
-                }else{
-                    header('Location: /Agora/Moderator/reportList');
-                }
+                $view = new VModerator();
+                $view->visitPost($post, $userAndProPic, $modUsername);
             }else{
-                header('Location: /Agora/Moderator/login');
+                header('Location: /Agora/Moderator/reportList');
             }
         }else{
-            header('Location: /Agora/Moderator/reportList');
+            header('Location: /Agora/Moderator/login');
         }
     }
 

@@ -14,12 +14,11 @@ class VSearch{
     /**
      * @throws SmartyException
      */
-    public function showSearch($keyword, $searchedPosts, $postUserPic, $searchedUsers, $userPic)
+    public function showSearch($keyword, $searchedPosts, $searchedUsers)
     {
         $this->smarty->assign('searchedPost', $searchedPosts);
         $this->smarty->assign('searchedUser', $searchedUsers);
-        $this->smarty->assign('postUserPic', $postUserPic);
-        $this->smarty->assign('userPic', $userPic);
+        
         $this->smarty->assign('keyword', $keyword);
         $this->smarty->display('search_result.tpl');
     }

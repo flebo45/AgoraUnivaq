@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2023-09-06 15:39:16
+/* Smarty version 3.1.33, created on 2024-04-13 22:42:34
   from 'C:\xampp\htdocs\Agora\Smarty\templates\login.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_64f8810448a6b7_48876965',
+  'unifunc' => 'content_661aee3a5d0096_71581189',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '67a0cc84512dc787accea659667515f0c46aec69' => 
     array (
       0 => 'C:\\xampp\\htdocs\\Agora\\Smarty\\templates\\login.tpl',
-      1 => 1693925652,
+      1 => 1712845777,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_64f8810448a6b7_48876965 (Smarty_Internal_Template $_smarty_tpl) {
+function content_661aee3a5d0096_71581189 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,7 +61,13 @@ function content_64f8810448a6b7_48876965 (Smarty_Internal_Template $_smarty_tpl)
       <?php if ($_smarty_tpl->tpl_vars['error']->value == true) {?>
         <p style="color: red; margin-left: 11%">username or password incorrect</p>
         <?php }?>
-      <form id="login" class="input-group" action="/Agora/User/login" method="post">
+      <?php if ($_smarty_tpl->tpl_vars['ban']->value == true) {?>
+        <p style="color: red; margin-left: 7%">the user you are trying to access is banned</p>
+        <?php }?>
+        <?php if ($_smarty_tpl->tpl_vars['regErr']->value == true) {?>
+          <p style="color: red; margin-left: 7%">email or username is already taken</p>
+          <?php }?>
+      <form id="login" class="input-group" action="/Agora/User/checkLogin" method="post">
         <label>
           <input type="text" class="input-field" placeholder="Enter Username" name="username" required>
         </label>
@@ -82,16 +88,13 @@ function content_64f8810448a6b7_48876965 (Smarty_Internal_Template $_smarty_tpl)
           <input type="text" class="input-field" placeholder="Surname" name="surname" required>
         </label>
         <label>
-          <input type="number" class="input-field" placeholder="Age" name="age" required>
+          <input type="number" class="input-field" placeholder="Age" name="age" min='18' required>
         </label>
         <label>
           <input type="text" class="input-field" placeholder="Username" name="username" required>
         </label>
         <label>
           <input type="email" class="input-field" placeholder="Email" name="email" required>
-        </label>
-        <label>
-          <input type="tel" class="input-field" placeholder="Phone" name="phone" required>
         </label>
         <label>
           <input type="password" class="input-field" placeholder="Enter Password" name="password" id="password" required>

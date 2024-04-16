@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2023-09-09 22:00:29
+/* Smarty version 3.1.33, created on 2024-04-13 19:29:46
   from 'C:\xampp\htdocs\Agora\Smarty\templates\creation_post.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_64fccedd1d4e60_91476125',
+  'unifunc' => 'content_661ac10a98dd43_88761949',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'c0961fa0ec223f764a562f6dd0a44a0bd5d994cf' => 
     array (
       0 => 'C:\\xampp\\htdocs\\Agora\\Smarty\\templates\\creation_post.tpl',
-      1 => 1694289593,
+      1 => 1712935947,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_64fccedd1d4e60_91476125 (Smarty_Internal_Template $_smarty_tpl) {
+function content_661ac10a98dd43_88761949 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -113,7 +113,7 @@ function content_64fccedd1d4e60_91476125 (Smarty_Internal_Template $_smarty_tpl)
             <span> <i class="uil uil-palette"></i></span>Theme
         </label>
         <label class="menu-items tex-bold " >
-            <button class="btn-transparent" onclick="location.href='/Agora/User/settings/0'"><i class="uil uil-setting"></i> </button>Setting
+            <button class="btn-transparent" onclick="location.href='/Agora/User/settings'"><i class="uil uil-setting"></i> </button>Setting
         </label>
       </div>
   </div>

@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2023-09-11 12:18:25
+/* Smarty version 3.1.33, created on 2024-04-14 12:41:15
   from 'C:\xampp\htdocs\Agora\Smarty\templates\adminP.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_64fee9712223a1_03836705',
+  'unifunc' => 'content_661bb2cb6e1792_10920885',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'ebd50db35b53649b09a222bb1b291bf7d6243f8d' => 
     array (
       0 => 'C:\\xampp\\htdocs\\Agora\\Smarty\\templates\\adminP.tpl',
-      1 => 1694380151,
+      1 => 1713091273,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_64fee9712223a1_03836705 (Smarty_Internal_Template $_smarty_tpl) {
+function content_661bb2cb6e1792_10920885 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -102,7 +102,8 @@ foreach ($_from as $_smarty_tpl->tpl_vars['report']->value) {
             </div>
             <div class="right">
               <div>
-              <form id='ban' action="/Agora/Moderator/ban/post/<?php echo $_smarty_tpl->tpl_vars['report']->value->getPost()->getId();?>
+              <form id='ban' action="/Agora/Moderator/banPost/<?php echo $_smarty_tpl->tpl_vars['report']->value->getPost()->getId();?>
+/<?php echo $_smarty_tpl->tpl_vars['report']->value->getPost()->getUser()->getId();?>
 " method="post">
                 <button class="btn btn-primary "><i class="uil uil-trash-alt">Ban</i></button>
               </form>
@@ -126,7 +127,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
           <h3 class="title">Body Comments</h3>
           <h3 class="title">Action</h3>
         </div>
-      <?php if (count($_smarty_tpl->tpl_vars['reportedPost']->value) === 0) {?>
+      <?php if (count($_smarty_tpl->tpl_vars['reportedComment']->value) === 0) {?>
           <div class="admin" style="margin-top: 1rem;">There are no reported comment</div>
       <?php } else { ?>
         <?php
@@ -153,7 +154,7 @@ foreach ($_from as $_smarty_tpl->tpl_vars['report']->value) {
             </div>
             <div class="right">
               <div>
-              <form id='ban' action="/Agora/Moderator/ban/comment/<?php echo $_smarty_tpl->tpl_vars['report']->value->getComment()->getId();?>
+              <form id='ban' action="/Agora/Moderator/banComment/<?php echo $_smarty_tpl->tpl_vars['report']->value->getComment()->getId();?>
 " method="post">
                 <button class="btn btn-primary "><i class="uil uil-trash-alt">Ban</i></button>
               </form>

@@ -45,4 +45,8 @@ class EUserFollow {
         return $this->idFollowed;
     }
 
+    public function setId($id){
+        $this->id = $id;
+    }
+
 }

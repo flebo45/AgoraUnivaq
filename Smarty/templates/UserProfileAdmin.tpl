@@ -67,7 +67,7 @@
                         <p class="text-muted">following</p>
                     </div>
                 </div>
-                <form id='ban' action="/Agora/Moderator/ban/user/{$user->getId()}" method="post">
+                <form id='ban' action="/Agora/Moderator/banUser/{$user->getId()}" method="post">
                     <button class="btn-primary btn">Ban</button>
                 </form>
                 <!----------------------DESCRIPTION-------------------->
@@ -130,23 +130,23 @@
                                 </div>
                                 <div class="ingo">
                                     <div>
-                                        <a style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$post->getTitle()}</a>
+                                        <a style="text-decoration: none; color: inherit; font-size: 1rem; font-weight : bold">{$post[0]->getTitle()}</a>
                                     </div>
-                                    <small>{$post->getTime()->format('Y-m-d H:i:s')}</small>
+                                    <small>{$post[0]->getTime()->format('Y-m-d H:i:s')}</small>
                                 </div>
                             </div>
-                            <div style="background: linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red);-webkit-background-clip: text;background-clip: text;color: transparent;font-weight: bold;">{$post->getCategory()}</div>
+                            <div style="background: linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red);-webkit-background-clip: text;background-clip: text;color: transparent;font-weight: bold;">{$post[0]->getCategory()}</div>
                         </div>
                         <div class="caption ">
                             <!-- Smarty tag for username -->
-                            <p><b>{$post->getUser()->getUsername()}</b><span class="harsh-tag">
-                        {$post->getDescription()}</span></p>
+                            <p><b>{$post[0]->getUser()->getUsername()}</b><span class="harsh-tag">
+                        {$post[0]->getDescription()}</span></p>
                         </div>
-                        {if $post->getImages()->count() === 0}
+                        {if count($post[0]->getImages()) === 0}
 
                         {else}
                             <div class="photo">
-                                {foreach from=$post->getImages() item=i}
+                                {foreach from=$post[0]->getImages() item=i}
                                     <img src="data:{$i->getType()};base64,{$i->getEncodedData()}" alt="Img">
 
                                 {/foreach}

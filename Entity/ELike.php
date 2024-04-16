@@ -53,4 +53,9 @@ class ELike{
     {
         return $this->idPost;
     }
+
+    public function setId($id)
+    {
+        $this->idLike = $id;
+    }
 }
