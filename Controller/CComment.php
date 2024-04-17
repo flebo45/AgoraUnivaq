@@ -8,14 +8,11 @@ class CComment{
      */
     public static function createComment($idPost){
         if(CUser::isLogged()){
-            $pm = FPersistentManager::getInstance();
-            USession::getInstance();
+            $userId = USession::getInstance()->getSessionElement('user');
+            $user = FPersistentManager::getInstance()->retriveObj(EUser::getEntity(), $userId);
 
-            $userId = USession::getSessionElement('user');
-            $user = $pm::retriveObj(EUser::getEntity(), $userId);
-
-            $comment = new EComment(UHTTPMethods::post('body'), $user, $idPost);              //TODO
-            $pm::uploadObj($comment);
+            $comment = new EComment(UHTTPMethods::post('body'), $user, $idPost);
+            FPersistentManager::getInstance()->uploadObj($comment);
             header('Location: /Agora/Post/visit/'. $idPost);
         }else{
             header('Location: /Agora/User/login');

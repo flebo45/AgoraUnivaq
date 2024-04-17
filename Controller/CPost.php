@@ -9,11 +9,8 @@ class CPost{
 
 public static function postForm(){
     if(CUser::isLogged()){
-        $pm = FPersistentManager::getInstance();
-        USession::getInstance();
-
-        $userId = USession::getSessionElement('user');
-        $userAndPropic = $pm::loadUsersAndImage($userId);
+        $userId = USession::getInstance()->getSessionElement('user');
+        $userAndPropic = FPersistentManager::getInstance()->loadUsersAndImage($userId);
 
         $view = new VManagePost();
         $view->showCreationForm($userAndPropic);
@@ -27,17 +24,15 @@ public static function postForm(){
  */
 public static function createPost(){
     if(CUser::isLogged()){
-        $pm = FPersistentManager::getInstance();
-        USession::getInstance();
         $view = new VManagePost();
 
-        $userId = USession::getSessionElement('user');
-        $user = $pm::retriveObj(EUser::getEntity(), $userId);
+        $userId = USession::getInstance()->getSessionElement('user');
+        $user = FPersistentManager::getInstance()->retriveObj(EUser::getEntity(), $userId);
 
         //create new Post Obj and upload it in the db 
         $post = new EPost(UHTTPMethods::post('title'), UHTTPMethods::post('description'), UHTTPMethods::post('category')); 
         $post->setUser($user);
-        $lastId = $pm::uploadObj($post);
+        $lastId = FPersistentManager::getInstance()->uploadObj($post);
         $post->setId($lastId);
         
         //file check for the images uploaded
@@ -45,7 +40,7 @@ public static function createPost(){
         //var_dump($check);
         if($check > 0){
             $uploadedImages = UHTTPMethods::files('imageFile');
-            $check = $pm::manageImages($uploadedImages, $post, $userId);
+            $check = FPersistentManager::getInstance()->manageImages($uploadedImages, $post, $userId);
             if(!$check){
                 $view->uploadFileError($check);
             }else{
@@ -66,16 +61,15 @@ public static function createPost(){
  */
 
 public static function visit($idPost){
-    $pm = FPersistentManager::getInstance();
-    $post = $pm::loadPostInVisited($idPost);
+    $post = FPersistentManager::getInstance()->loadPostInVisited($idPost);
     if(!is_array($post)){
         $view = new VManagePost();
-        $visitedUserAndPic = $pm::loadUsersAndImage($post->getUser()->getId());
+        $visitedUserAndPic = FPersistentManager::getInstance()->loadUsersAndImage($post->getUser()->getId());
 
-        $commentsAndUserPic = $pm::loadCommentsAndUsersPic($idPost);
+        $commentsAndUserPic = FPersistentManager::getInstance()->loadCommentsAndUsersPic($idPost);
 
         //array with: like number, follower number, followed number
-        $numericInfo = $pm::loadFollLikeNumb($post);
+        $numericInfo = FPersistentManager::getInstance()->loadFollLikeNumb($post);
 
         if(!CUser::isLogged()){
             $userAndPropic = null;
@@ -85,9 +79,9 @@ public static function visit($idPost){
             USession::getInstance();
             $userId = USession::getSessionElement('user');
 
-            $userAndPropic = $pm::loadUsersAndImage($userId);
-            $follow = $pm::retriveFollow($userId, $post->getUser()->getId());
-            $like = $pm::retriveLike($userId, $idPost);
+            $userAndPropic = FPersistentManager::getInstance()->loadUsersAndImage($userId);
+            $follow = FPersistentManager::getInstance()->retriveFollow($userId, $post->getUser()->getId());
+            $like = FPersistentManager::getInstance()->retriveLike($userId, $idPost);
         }
 
         $view->showPost($userAndPropic, $visitedUserAndPic, $post, $commentsAndUserPic, $numericInfo, $like,  $follow);
@@ -104,8 +98,7 @@ public static function visit($idPost){
 public static function like($idPost)
 {
     if(CUser::isLogged()){
-        $pm = FPersistentManager::getInstance();
-        $usersAndPropic = $pm::getLikesPage($idPost);
+        $usersAndPropic = FPersistentManager::getInstance()->getLikesPage($idPost);
 
         $view = new VManagePost();
         $view->showUsersList($usersAndPropic, 'like');
@@ -121,16 +114,14 @@ public static function like($idPost)
 public static function delete($idPost)
 {
     if(CUser::isLogged()){
-        $pm = FPersistentManager::getInstance();
-        USession::getInstance();
-        $idUser = USession::getSessionElement('user');
+        $idUser = USession::getInstance()->getSessionElement('user');
 
-        $post = $pm::getPostAndUser($idPost);
+        $post = FPersistentManager::getInstance()->getPostAndUser($idPost);
     
 
         //check if the Post exist
         if(count($post) > 0  && $idUser == $post[0]->getUser()->getId()){
-            $pm::deletePost($idPost, $idUser);
+            FPersistentManager::getInstance()->deletePost($idPost, $idUser);
             header('Location: /Agora/User/personalProfile');
         }else{
             header('Location: /Agora/User/personalProfile');
@@ -147,15 +138,13 @@ public static function delete($idPost)
 public static function settingLike($idPost)
 {
     if(CUser::isLogged()){
-        $pm = FPersistentManager::getInstance();
-        USession::getInstance();
-        $idUser = USession::getSessionElement('user');
+        $idUser = USession::getInstance()->getSessionElement('user');
 
-        $post = $pm::retriveObj(EPost::getEntity(), $idPost);
+        $post = FPersistentManager::getInstance()->retriveObj(EPost::getEntity(), $idPost);
         if(count($post) > 0){
             //create new Like Obj and persist it
             $like = new ELike($idUser, $idPost);
-            $pm::uploadObj($like);
+            FPersistentManager::getInstance()->uploadObj($like);
         }
         header('Location: /Agora/Post/visit/'.$idPost);
     }else{
@@ -170,15 +159,13 @@ public static function settingLike($idPost)
 public static function deleteLike($idPost)
 {
     if(CUser::isLogged()){
-        $pm = FPersistentManager::getInstance();
-        USession::getInstance();
-        $idUser = USession::getSessionElement('user');
+        $idUser = USession::getInstance()->getSessionElement('user');
             
-        $like = $pm::retriveLike($idUser, $idPost);
+        $like = FPersistentManager::getInstance()->retriveLike($idUser, $idPost);
 
         //check if the like exist and the User who is deleting the like is the same User
         if(!is_array($like)){
-            $pm::deleteLike($like->getId(), $idUser);
+            FPersistentManager::getInstance()->deleteLike($like->getId(), $idUser);
         }
         header('Location: /Agora/Post/visit/'.$idPost);
     }else{

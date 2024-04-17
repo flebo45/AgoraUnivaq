@@ -7,14 +7,11 @@ class CSearch{
      */
     public static function search()
     {
-            if(CUser::isLogged())
-            {
-                $pm = FPersistentManager::getInstance();
-
+            if(CUser::isLogged()){
                 //list of Posts 'title LIKE keyword'
-                $searchedPosts = $pm::getSearchedPost(UHTTPMethods::post('keyword'));             
+                $searchedPosts = FPersistentManager::getInstance()->getSearchedPost(UHTTPMethods::post('keyword'));             
                 //list of Users 'username LIKE keyword'
-                $searchedUsers = $pm::getSearchedUsers(UHTTPMethods::post('keyword'));
+                $searchedUsers = FPersistentManager::getInstance()->getSearchedUsers(UHTTPMethods::post('keyword'));
 
                 $view = new VSearch();
                 $view->showSearch(UHTTPMethods::post('keyword'), $searchedPosts, $searchedUsers);

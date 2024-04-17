@@ -44,11 +44,10 @@ class CModerator{
      */
     public static function checkLogin()
     {
-        $pm = FPersistentManager::getInstance();
         $view = new VModerator();
-        $username = $pm::verifyUserUsername(UHTTPMethods::post('username'));
+        $username = FPersistentManager::getInstance()->verifyUserUsername(UHTTPMethods::post('username'));
         if($username){
-            $user = $pm::retriveModOnUsername(UHTTPMethods::post('username'));
+            $user = FPersistentManager::getInstance()->retriveModOnUsername(UHTTPMethods::post('username'));
             if(password_verify(UHTTPMethods::post('password'), $user->getPassword())){
                 if(USession::getSessionStatus() == PHP_SESSION_NONE){
                     USession::getInstance();
@@ -83,15 +82,12 @@ class CModerator{
     {
         
         if(CModerator::isLogged()){
-            $pm = FPersistentManager::getInstance();
+            $modId = USession::getInstance()->getSessionElement('mod');
 
-            USession::getInstance();
-            $modId = USession::getSessionElement('mod');
+            $mod = FPersistentManager::getInstance()->retriveObj(EModerator::getEntity(), $modId);
 
-            $mod = $pm::retriveObj(EModerator::getEntity(), $modId);
-
-            $reportedPost = $pm::getReportedPost();
-            $reportedComment = $pm::getReportedComment();
+            $reportedPost = FPersistentManager::getInstance()->getReportedPost();
+            $reportedComment = FPersistentManager::getInstance()->getReportedComment();
 
             $view = new VModerator();
 
@@ -108,11 +104,10 @@ class CModerator{
 
     public static function banUser($idUser){
         if(CModerator::isLogged()){
-            $pm = FPersistentManager::getInstance();
-            $user = $pm::retriveObj(EUser::getEntity(), $idUser);
+            $user = FPersistentManager::getInstance()->retriveObj(EUser::getEntity(), $idUser);
             if($user !== null){
                 $user->setBan(true);
-                $pm::updateUserBan($user);
+                FPersistentManager::getInstance()->updateUserBan($user);
                 header('Location: /Agora/Moderator/reportList');
             }
         }else{
@@ -127,20 +122,19 @@ class CModerator{
      */
     public static function banPost($idPost, $idUser){
         if(CModerator::isLogged()){
-            $pm = FPersistentManager::getInstance();
-            $post = $pm::retriveObj(EPost::getEntity(), $idPost);
+            $post = FPersistentManager::getInstance()->retriveObj(EPost::getEntity(), $idPost);
             if($post !== null){
                 $post[0]->setBan(true);
-                $pm::updatePostBan($post[0]);
-                $pm::deleteRelatedReports($idPost, 'idPost');
+                FPersistentManager::getInstance()->updatePostBan($post[0]);
+                FPersistentManager::getInstance()->deleteRelatedReports($idPost, 'idPost');
 
-                $user = $pm::retriveObj(EUser::getEntity(), $idUser);
+                $user = FPersistentManager::getInstance()->retriveObj(EUser::getEntity(), $idUser);
                 $user->setWarnings();
-                $pm::updateUserWarnings($user);
+                FPersistentManager::getInstance()->updateUserWarnings($user);
 
                 if($user->getWarnings() == MAX_WARNINGS){
                     $user->setBan(true);
-                    $pm::updateUserBan($user);
+                    FPersistentManager::getInstance()->updateUserBan($user);
                 }
                 header('Location: /Agora/Moderator/reportList');
             }
@@ -155,12 +149,11 @@ class CModerator{
      */
     public static function banComment($idComment){
         if(CModerator::isLogged()){
-            $pm = FPersistentManager::getInstance();
-            $comment = $pm::retriveObj(EComment::getEntity(), $idComment);
+            $comment = FPersistentManager::getInstance()->retriveObj(EComment::getEntity(), $idComment);
             if($comment !== null){
                 $comment->setBan(true);
-                $pm::updateCommentBan($comment);
-                $pm::deleteRelatedReports($idComment, 'idComment');
+                FPersistentManager::getInstance()->updateCommentBan($comment);
+                FPersistentManager::getInstance()->deleteRelatedReports($idComment, 'idComment');
             }
             header('Location: /Agora/Moderator/reportList');
         }else{
@@ -203,11 +196,9 @@ class CModerator{
     public static function ignore($id)
     {
         if(CModerator::isLogged()){
-            $pm = FPersistentManager::getInstance();
-
-            $report = $pm::retriveObj(EReport::getEntity(), $id);
+            $report = FPersistentManager::getInstance()->retriveObj(EReport::getEntity(), $id);
             if($report !== null){
-                $pm::deleteRelatedReports($id);
+                FPersistentManager::getInstance()->deleteRelatedReports($id);
             }
             header('Location: /Agora/Moderator/reportList');
         }else{
@@ -223,21 +214,20 @@ class CModerator{
     {
 
         if(CModerator::isLogged()){
-            $pm = FPersistentManager::getInstance();
-            USession::getInstance();
+            ;
 
-            $modId = USession::getSessionElement('mod');
-            $mod = $pm::retriveObj(EModerator::getEntity(), $modId);
+            $modId = USession::getInstance()->getSessionElement('mod');
+            $mod = FPersistentManager::getInstance()->retriveObj(EModerator::getEntity(), $modId);
             $modUsername = $mod->getUsername();
 
-            $user = $pm::retriveObj(EUser::getEntity(), $id);
+            $user = FPersistentManager::getInstance()->retriveObj(EUser::getEntity(), $id);
             if(!is_array($user)){
-                $userAndPropic = $pm::loadUsersAndImage($id);
+                $userAndPropic = FPersistentManager::getInstance()->loadUsersAndImage($id);
 
-                $userPosts = $pm::loadUserPage($id);
+                $userPosts = FPersistentManager::getInstance()->loadUserPage($id);
 
-                $followerNumb = $pm::getFollowerNumb($id);
-                $followedNumb = $pm::getFollowedNumb($id);
+                $followerNumb = FPersistentManager::getInstance()->getFollowerNumb($id);
+                $followedNumb = FPersistentManager::getInstance()->getFollowedNumb($id);
 
                 $view = new VModerator();
                 $view->visitUser($userAndPropic, $userPosts, $followerNumb, $followedNumb, $modUsername);
@@ -256,16 +246,13 @@ class CModerator{
     public static function visitPost($id)
     {
         if(CModerator::isLogged()){
-            $pm = FPersistentManager::getInstance();
-            USession::getInstance();
-
-            $modId = USession::getSessionElement('mod');
-            $mod = $pm::retriveObj(EModerator::getEntity(), $modId);
+            $modId = USession::getInstance()->getSessionElement('mod');
+            $mod = FPersistentManager::getInstance()->retriveObj(EModerator::getEntity(), $modId);
             $modUsername = $mod->getUsername();
 
-            $post = $pm::loadPostInVisited($id);
+            $post = FPersistentManager::getInstance()->loadPostInVisited($id);
             if(!is_array($post)){
-                $userAndProPic = $pm::loadUsersAndImage($post->getUser()->getId());
+                $userAndProPic = FPersistentManager::getInstance()->loadUsersAndImage($post->getUser()->getId());
 
                 $view = new VModerator();
                 $view->visitPost($post, $userAndProPic, $modUsername);

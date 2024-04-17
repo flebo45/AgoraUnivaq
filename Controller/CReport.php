@@ -9,16 +9,14 @@ class CReport{
     public static function reportComment($idComment)
     {
         if(CUser::isLogged()){
-            $pm = FPersistentManager::getInstance();
-            USession::getInstance();
-            $idUser = USession::getSessionElement('user');
+            $idUser = USession::getInstance()->getSessionElement('user');
 
-            $reportedComment = $pm::retriveObj(EComment::getEntity(), $idComment);
+            $reportedComment = FPersistentManager::getInstance()->retriveObj(EComment::getEntity(), $idComment);
             if($reportedComment !== null){
                 //create a new Report Obj and persist it
                 $report = new EReport('', 'linguaggio scurrile', $idUser);
                 $report->setComment($reportedComment);
-                $pm::uploadObj($report);
+                FPersistentManager::getInstance()->uploadObj($report);
                 header('Location: /Agora/Post/visit/'. $reportedComment->getIdPost());
             }else{
                 header('Location: /Agora/User/home');
@@ -35,16 +33,14 @@ class CReport{
     */
     public static function reportPost($idPost){
         if(CUser::isLogged()){
-            $pm = FPersistentManager::getInstance();
-            USession::getInstance();
-            $idUser = USession::getSessionElement('user');
+            $idUser = USession::getInstance()->getSessionElement('user');
 
-            $reportedPost = $pm::retriveObj(EPost::getEntity(), $idPost);
+            $reportedPost = FPersistentManager::getInstance()->retriveObj(EPost::getEntity(), $idPost);
             if($reportedPost !== null){
                 //create a new Report Obj and persist it
                 $report = new EReport(UHTTPMethods::post('description'), UHTTPMethods::post('type'), $idUser);
                 $report->setPost($reportedPost[0]);
-                $pm::uploadObj($report);
+                FPersistentManager::getInstance()->uploadObj($report);
                 header('Location: /Agora/Post/visit/'. $idPost);
             }else{
                 header('Location: /Agora/User/home');
