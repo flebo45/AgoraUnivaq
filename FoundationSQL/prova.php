@@ -1,5 +1,7 @@
 <?php
 
+use Doctrine\DBAL\Types\VarDateTimeType;
+
 require_once "autoload.php";
 
 
@@ -24,7 +26,7 @@ $pm = FPersistentManager::getInstance();
 // $numLikes = $pm->getLikeNumber(1);
 // var_dump($numLikes);
 
-// $user = new EUser('Alessandro', 'Primavera', '2002', 'ale.prim@gmail.com', 'Ale.Prim1', 'alePrim6');
+$user = new EUser('Alessandro', 'Primavera', '2002', 'ale.prim@gmail.com', 'Ale.Prim1', 'alePrim6');
 // $user->setBio('b');
 // $user->setWorking('w');
 // $user->setStudiedAt('s');
@@ -74,4 +76,6 @@ $pm = FPersistentManager::getInstance();
 //  $mod = new EModerator('admin', 'admin', 1990, 'admin@admin.it', 'Mod.12!', 'Admin1');
 
 // $pm->uploadObj($mod);
-var_dump($pm->getReportedPost());
+// var_dump($pm->getReportedPost());
+
+var_dump(FImage::getClass());

@@ -1,7 +1,6 @@
 <?php
 
-class FPerson extends FEntityManagerSQL{
-    private static $class = "FPerson";
+class FPerson{
 
     private static $table = "person";
 
@@ -18,7 +17,7 @@ class FPerson extends FEntityManagerSQL{
     }
 
     public static function getClass(){
-        return self::$class;
+        return self::class;
     }
 
     public static function getKey(){
@@ -36,9 +35,8 @@ class FPerson extends FEntityManagerSQL{
     }
 
     public static function verify($field, $id){
-        $fem = FEntityManagerSQL::getInstance();
-        $queryResult = $fem::retriveObj(self::getTable(), $field, $id);
+        $queryResult = FEntityManagerSQL::getInstance()->retriveObj(self::getTable(), $field, $id);
 
-        return $fem::existInDb($queryResult);
+        return FEntityManagerSQL::getInstance()->existInDb($queryResult);
     }
 }

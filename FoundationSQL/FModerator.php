@@ -1,7 +1,6 @@
 <?php
 
-class FModerator extends FEntityManagerSQL{
-    private static $class = "FModerator";
+class FModerator{
 
     private static $table = "moderator";
 
@@ -18,7 +17,7 @@ class FModerator extends FEntityManagerSQL{
     }
 
     public static function getClass(){
-        return self::$class;
+        return self::class;
     }
 
     public static function getKey(){
@@ -44,8 +43,7 @@ class FModerator extends FEntityManagerSQL{
     }
 
     public static function getObj($id){
-        $fem = FEntityManagerSQL::getInstance();
-        $result = $fem->retriveObj(FPerson::getTable(), FModerator::getKey(), $id);
+        $result = FEntityManagerSQL::getInstance()->retriveObj(FPerson::getTable(), FModerator::getKey(), $id);
         //var_dump($result);
         if(count($result) > 0){
             $mod = self::createModeratorObj($result);
@@ -57,12 +55,11 @@ class FModerator extends FEntityManagerSQL{
     }
 
     public static function saveObj($obj){
-        $fem = FEntityManagerSQL::getInstance();
 
-        $savePerson = $fem->saveObject(FPerson::getClass(), $obj);
+        $savePerson = FEntityManagerSQL::getInstance()->saveObject(FPerson::getClass(), $obj);
         //var_dump($savePerson);
         if($savePerson !== null){
-            $saveMod = $fem->saveObjectFromId(self::getClass(), $savePerson);
+            $saveMod = FEntityManagerSQL::getInstance()->saveObjectFromId(self::getClass(), $savePerson);
             return $saveMod;
         }else{
             return false;
@@ -70,9 +67,8 @@ class FModerator extends FEntityManagerSQL{
     }
 
     public static function getModByUsername($username){
-        $fem = FEntityManagerSQL::getInstance();
 
-        $result = $fem::retriveObj(FPerson::getTable(), 'username', $username);
+        $result = FEntityManagerSQL::getInstance()->retriveObj(FPerson::getTable(), 'username', $username);
         //var_dump($result);
 
         if($result !== null && count($result) > 0){

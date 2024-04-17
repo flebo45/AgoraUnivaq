@@ -1,7 +1,6 @@
 <?php
 
-class FReport extends FEntityManagerSQL{
-    private static $class = "FReport";
+class FReport{
 
     private static $table = "report";
 
@@ -18,7 +17,7 @@ class FReport extends FEntityManagerSQL{
     }
 
     public static function getClass(){
-        return self::$class;
+        return self::class;
     }
 
     public static function getKey(){
@@ -26,15 +25,13 @@ class FReport extends FEntityManagerSQL{
     }
 
     public static function createReportObj($queryResult){
-        $fem = FEntityManagerSQL::getInstance();
-        
         if(count($queryResult) > 0){
             $reports = array();
             for($i = 0; $i < count($queryResult); $i++){
                 $report = new EReport($queryResult[$i]['description'], $queryResult[$i]['type'], $queryResult[$i]['idUser']);
                 $report->setId($queryResult[$i]['idReport']);
                 if($queryResult[$i]['idPost'] !== null){
-                    $postRow = $fem::retriveObj(FPost::getTable(), FPost::getKey(), $queryResult[$i]['idPost']);
+                    $postRow = FEntityManagerSQL::getInstance()->retriveObj(FPost::getTable(), FPost::getKey(), $queryResult[$i]['idPost']);
                     $post = FPost::getPostWithUser($postRow);
                     $report->setPost($post[0]);
                 }else{
@@ -66,8 +63,7 @@ class FReport extends FEntityManagerSQL{
     }
 
     public static function getObj($id){
-        $fem = FEntityManagerSQL::getInstance();
-        $result = $fem->retriveObj(self::getTable(), self::getKey(), $id);
+        $result = FEntityManagerSQL::getInstance()->retriveObj(self::getTable(), self::getKey(), $id);
         //var_dump($result);
         if(count($result) > 0){
             $report = self::createReportObj($result);
@@ -78,9 +74,7 @@ class FReport extends FEntityManagerSQL{
     }
 
     public static function saveObj($obj){
-        $fem = FEntityManagerSQL::getInstance();
-
-        $saveReport = $fem->saveObject(self::getClass(), $obj);
+        $saveReport = FEntityManagerSQL::getInstance()->saveObject(self::getClass(), $obj);
         if($saveReport !== null){
             return true;
         }else{
@@ -89,38 +83,33 @@ class FReport extends FEntityManagerSQL{
     }
 
     public static function reportedPostList(){
-        $fem = FEntityManagerSQL::getInstance();
-
-        $result = $fem::objectListOnNull(self::getTable(), 'idComment');
+        $result = FEntityManagerSQL::getInstance()->objectListOnNull(self::getTable(), 'idComment');
 
         return $result;
     }
 
     public static function reportedCommentList(){
-        $fem = FEntityManagerSQL::getInstance();
-
-        $result = $fem::objectListOnNull(self::getTable(), 'idPost');
+        $result = FEntityManagerSQL::getInstance()->objectListOnNull(self::getTable(), 'idPost');
 
         return $result;
     }
 
     public static function deleteReportInDb($id, $field = null){
-        $fem = FEntityManagerSQL::getInstance();
         try{
-            $fem->getDb()->beginTransaction();
+            FEntityManagerSQL::getInstance()->getDb()->beginTransaction();
             if($field === null){
-                $fem::deleteObjInDb(self::getTable(), self::getKey(), $id);
+                FEntityManagerSQL::getInstance()->deleteObjInDb(self::getTable(), self::getKey(), $id);
             }else{
-                $fem::deleteObjInDb(self::getTable(), $field, $id);
+                FEntityManagerSQL::getInstance()->deleteObjInDb(self::getTable(), $field, $id);
             }
-            $fem->getDb()->commit();
+            FEntityManagerSQL::getInstance()->getDb()->commit();
             return true;
         }catch(PDOException $e){
             echo "ERROR " . $e->getMessage();
-            $fem->getDb()->rollBack();
+            FEntityManagerSQL::getInstance()->getDb()->rollBack();
             return false;
         }finally{
-            $fem->closeConnection();
+            FEntityManagerSQL::getInstance()->closeConnection();
         }
         
     }   

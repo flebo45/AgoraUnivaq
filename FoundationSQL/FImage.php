@@ -1,7 +1,6 @@
 <?php
 
-class FImage extends FEntityManagerSQL{
-    private static $class = "FImage";
+class FImage{
 
     private static $table = "image";
 
@@ -18,7 +17,7 @@ class FImage extends FEntityManagerSQL{
     }
 
     public static function getClass(){
-        return self::$class;
+        return self::class;
     }
 
     public static function getKey(){
@@ -53,8 +52,7 @@ class FImage extends FEntityManagerSQL{
     }
 
     public static function getObj($id){
-        $fem = FEntityManagerSQL::getInstance();
-        $result = $fem->retriveObj(self::getTable(), self::getKey(), $id);
+        $result = FEntityManagerSQL::getInstance()->retriveObj(self::getTable(), self::getKey(), $id);
         //var_dump($result);
         if(count($result) > 0){
             $image = self::createImageObj($result);
@@ -68,9 +66,8 @@ class FImage extends FEntityManagerSQL{
     }
 
     public static function saveObj($obj){
-        $fem = FEntityManagerSQL::getInstance();
 
-        $saveImage = $fem->saveObject(self::getClass(), $obj);
+        $saveImage = FEntityManagerSQL::getInstance()->saveObject(self::getClass(), $obj);
         if($saveImage !== null){
             return $saveImage;
         }else{
@@ -79,8 +76,7 @@ class FImage extends FEntityManagerSQL{
     }
 
     public static function getObjOnPostId($idPost){
-        $fem = FEntityManagerSQL::getInstance();
-        $result = $fem->retriveObj(self::getTable(), FPost::getKey(), $idPost);
+        $result = FEntityManagerSQL::getInstance()->retriveObj(self::getTable(), FPost::getKey(), $idPost);
 
         if(count($result) > 0){
             $image = self::createImageObj($result);

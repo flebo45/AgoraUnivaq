@@ -1,7 +1,6 @@
 <?php
 
-class FComment extends FEntityManagerSQL{
-    private static $class = "FComment";
+class FComment{
 
     private static $table = "comment";
 
@@ -18,7 +17,7 @@ class FComment extends FEntityManagerSQL{
     }
 
     public static function getClass(){
-        return self::$class;
+        return self::class;
     }
 
     public static function getKey(){
@@ -60,8 +59,7 @@ class FComment extends FEntityManagerSQL{
     }
 
     public static function getObj($id){
-        $fem = FEntityManagerSQL::getInstance();
-        $result = $fem->retriveObj(self::getTable(), self::getKey(), $id);
+        $result = FEntityManagerSQL::getInstance()->retriveObj(self::getTable(), self::getKey(), $id);
         //var_dump($result);
         if(count($result) > 0){
             $comment = self::crateCommentObj($result);
@@ -73,10 +71,9 @@ class FComment extends FEntityManagerSQL{
     }
 
     public static function saveObj($obj, $fieldArray = null){
-        $fem = FEntityManagerSQL::getInstance();
 
         if($fieldArray === null){
-            $saveComment = $fem->saveObject(self::getClass(), $obj);
+            $saveComment = FEntityManagerSQL::getInstance()->saveObject(self::getClass(), $obj);
             if($saveComment !== null){
                 return true;
             }else{
@@ -84,19 +81,19 @@ class FComment extends FEntityManagerSQL{
             }
         }else{
             try{
-                $fem::getDb()->beginTransaction();
+                FEntityManagerSQL::getInstance()->getDb()->beginTransaction();
                 foreach($fieldArray as $fv){
-                    $fem::updateObj(FComment::getTable(), $fv[0], $fv[1], self::getKey(), $obj->getId());
+                    FEntityManagerSQL::getInstance()->updateObj(FComment::getTable(), $fv[0], $fv[1], self::getKey(), $obj->getId());
                 }
-                $fem->getDb()->commit();
+                FEntityManagerSQL::getInstance()->getDb()->commit();
                 return true;
 
             }catch(PDOException $e){
                 echo "ERROR " . $e->getMessage();
-                $fem->getDb()->rollBack();
+                FEntityManagerSQL::getInstance()->getDb()->rollBack();
                 return false;
             }finally{
-                $fem->closeConnection();
+                FEntityManagerSQL::getInstance()->closeConnection();
             }
         }
         
@@ -105,9 +102,8 @@ class FComment extends FEntityManagerSQL{
 
     public static function getCommentListNotBanned($idPost)
     {
-        $fem = FEntityManagerSQL::getInstance();
 
-        $result = $fem::objectListNotRemoved(self::getTable(), FPost::getKey(), $idPost);
+        $result = FEntityManagerSQL::getInstance()->objectListNotRemoved(self::getTable(), FPost::getKey(), $idPost);
 
         if(count($result) == 1){
             $comment = array();

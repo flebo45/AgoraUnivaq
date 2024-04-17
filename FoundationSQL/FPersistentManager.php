@@ -1,7 +1,5 @@
 <?php
-//TODO base function for :
 
-//TODO -Report
 /**
  * classe sql
  */
@@ -54,7 +52,7 @@ class FPersistentManager{
      * @return mixed
      */
     public static function uploadObj($obj){
-        $foundClass = "F" . substr($obj->getEntity(), 1);
+        $foundClass = "F" . substr(get_class($obj), 1);
         $staticMethod = "saveObj";
 
         $result = call_user_func([$foundClass, $staticMethod], $obj);
@@ -179,9 +177,10 @@ class FPersistentManager{
      * @param int $idImage Refers to teh id of the image to delete
      */
     public static function deleteImage($idImage){
-        $fem = FEntityManagerSQL::getInstance();
 
-        return $fem::deleteObjInDb(FImage::getTable(), FImage::getKey(), $idImage);
+        $result = FEntityManagerSQL::getInstance()->deleteObjInDb(FImage::getTable(), FImage::getKey(), $idImage);
+
+        return $result;
     }
 
     /**
@@ -220,9 +219,8 @@ class FPersistentManager{
      * @param int $idPost Refres to the post 
      */
     public static function getLikesUserOfAPost($idPost){
-        $fem = FEntityManagerSQL::getInstance();
         //prende i like, dai like prende gli utenti e ritorna una lista di utenti 
-        $likesRow = $fem::retriveObj(FLike::getTable(), FPost::getKey(), $idPost);
+        $likesRow = FEntityManagerSQL::getInstance()->retriveObj(FLike::getTable(), FPost::getKey(), $idPost);
         $result = array();
         if(count($likesRow) > 0){
             for($i = 0; $i < count($likesRow); $i++){
@@ -270,9 +268,8 @@ class FPersistentManager{
      * @param int $idUser Refrs to the user who follow
      */
     public static function getFollowedUserList($idUser){
-        $fem = FEntityManagerSQL::getInstance();
         //prende gli utenti seguti da $idUser, crea una lista di utenti
-        $followRow = $fem::retriveObj(FUserFollow::getTable(), 'idFollower', $idUser);
+        $followRow = FEntityManagerSQL::getInstance()->retriveObj(FUserFollow::getTable(), 'idFollower', $idUser);
         $result = array();
         if(count($followRow) > 0){
             for($i = 0; $i < count($followRow); $i++){
@@ -288,9 +285,8 @@ class FPersistentManager{
      * @param int $idUser Refrs to the user who follow
      */
     public static function getFollowerUserList($idUser){
-        $fem = FEntityManagerSQL::getInstance();
         //prende gli utenti che seguono $idUser, crea una lista di utenti
-        $followerRow = $fem::retriveObj(FUserFollow::getTable(), 'idFollowed', $idUser);
+        $followerRow = FEntityManagerSQL::getInstance()->retriveObj(FUserFollow::getTable(), 'idFollowed', $idUser);
         $result = array();
         if(count($followerRow) > 0){
             for($i = 0; $i < count($followerRow); $i++){
@@ -313,7 +309,7 @@ class FPersistentManager{
 
         $postsAndUserPic = array();
         foreach($posts as $p){
-            $arrayData = array($p, self::retriveObj(EImage::getEntity(), $p->getUser()->getIdImage()));
+            $arrayData = array($p, self::retriveObj(FImage::getClass(), $p->getUser()->getIdImage()));
             $postsAndUserPic[] = $arrayData;
         }
 
@@ -377,7 +373,7 @@ public static function loadHomePage($id){
 
         $homePagePostsAndUserPropic = array();
         foreach($homePagePosts as $p){
-            $arrayData = array($p, self::retriveObj(EImage::getEntity(), $p->getUser()->getIdImage()));
+            $arrayData = array($p, self::retriveObj(FImage::getClass(), $p->getUser()->getIdImage()));
             $homePagePostsAndUserPropic[] = $arrayData;
         }
 
@@ -625,7 +621,7 @@ public static function loadHomePage($id){
 
         $categoryPagePostsAndUserPropic = array();
         foreach($categoryPagePost as $p){
-            $arrayData = array($p, self::retriveObj(EImage::getEntity(), $p->getUser()->getIdImage()));
+            $arrayData = array($p, self::retriveObj(FImage::getClass(), $p->getUser()->getIdImage()));
             $categoryPagePostsAndUserPropic[] = $arrayData;
         }
 
@@ -647,7 +643,7 @@ public static function loadHomePage($id){
             return $explorePagePostsAndUserPropic = array();
         }else{
             foreach($explorePagePost as $p){
-                $arrayData = array($p, self::retriveObj(EImage::getEntity(), $p->getUser()->getIdImage()));
+                $arrayData = array($p, self::retriveObj(FImage::getClass(), $p->getUser()->getIdImage()));
                 $explorePagePostsAndUserPropic[] = $arrayData;
             }
     
@@ -705,12 +701,12 @@ public static function loadHomePage($id){
         $result = array();
         if(is_array($userInput)){
             foreach($userInput as $u){
-                $arrayData = array($u, self::retriveObj(EImage::getEntity(), $u->getIdImage()));
+                $arrayData = array($u, self::retriveObj(FImage::getClass(), $u->getIdImage()));
                 $result[] = $arrayData;
             }
         }else{
-            $user = self::retriveObj(EUser::getEntity(), $userInput);
-            $arrayData = array($user, self::retriveObj(EImage::getEntity(), $user->getIdImage()));
+            $user = self::retriveObj(FUser::getClass(), $userInput);
+            $arrayData = array($user, self::retriveObj(FImage::getClass(), $user->getIdImage()));
             $result[] = $arrayData;
         }
         return $result;
@@ -752,7 +748,7 @@ public static function loadHomePage($id){
         $result = array();
 
         foreach($comments as $c){
-            $arrayData = array($c, self::retriveObj(EImage::getEntity(), $c->getUser()->getIdImage()));
+            $arrayData = array($c, self::retriveObj(FImage::getClass(), $c->getUser()->getIdImage()));
             $result[] = $arrayData;
         }
         return $result;
@@ -772,8 +768,8 @@ public static function loadHomePage($id){
      * @param int $idPost
      */
     public static function getPostAndUser($idPost){
-        $fem = FEntityManagerSQL::getInstance();
-        $queryResult = $fem::retriveObj(FPost::getTable(), FPost::getKey(), $idPost);
+
+        $queryResult = FEntityManagerSQL::getInstance()->retriveObj(FPost::getTable(), FPost::getKey(), $idPost);
 
         $post = FPost::getPostWithUser($queryResult);
 

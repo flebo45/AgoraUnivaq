@@ -1,7 +1,6 @@
 <?php
 
-class FLike extends FEntityManagerSQL{
-    private static $class = "FLike";
+class FLike{
 
     private static $table = "likes";
 
@@ -18,7 +17,7 @@ class FLike extends FEntityManagerSQL{
     }
 
     public static function getClass(){
-        return self::$class;
+        return self::class;
     }
 
     public static function getKey(){
@@ -49,8 +48,7 @@ class FLike extends FEntityManagerSQL{
     }
 
     public static function getObj($id){
-        $fem = FEntityManagerSQL::getInstance();
-        $result = $fem->retriveObj(self::getTable(), self::getKey(), $id);
+        $result = FEntityManagerSQL::getInstance()->retriveObj(self::getTable(), self::getKey(), $id);
         if(count($result) > 0){
             $like = self::createLikeObj($result);
             return $like;
@@ -60,8 +58,7 @@ class FLike extends FEntityManagerSQL{
     }
 
     public static function saveObj($obj){
-        $fem = FEntityManagerSQL::getInstance();
-        $saveLike = $fem->saveObject(self::getClass(), $obj);
+        $saveLike = FEntityManagerSQL::getInstance()->saveObject(self::getClass(), $obj);
         if($saveLike !== null){
             return true;
         }else{
@@ -71,15 +68,13 @@ class FLike extends FEntityManagerSQL{
 
     public static function getLikeNumber($idPost)
     {
-        $fem = FEntityManagerSQL::getInstance();
-        $result = $fem::retriveObj(self::getTable(), FPost::getKey(), $idPost);
+        $result = FEntityManagerSQL::getInstance()->retriveObj(self::getTable(), FPost::getKey(), $idPost);
     
         return count($result);
     }
 
     public static function getLikeOnUser($idUser, $idPost){
-        $fem = FEntityManagerSQL::getInstance();
-        $queryResult = $fem::getObjOnAttributes(self::getTable(), Fuser::getKey(), $idUser, FPost::getKey(), $idPost);
+        $queryResult = FEntityManagerSQL::getInstance()->getObjOnAttributes(self::getTable(), Fuser::getKey(), $idUser, FPost::getKey(), $idPost);
         $like = self::createLikeObj($queryResult);
 
         return $like;
@@ -87,25 +82,23 @@ class FLike extends FEntityManagerSQL{
     }
 
     public static function deleteLikeInDb($idLike, $idUser){
-        $fem = FEntityManagerSQL::getInstance();
-
         try{
-            $fem->getDb()->beginTransaction();
-            $queryResult = $fem->retriveObj(self::getTable(), self::getKey(), $idLike);
-            if($fem::existInDb($queryResult) && $fem::checkCreator($queryResult, $idUser)){
-                $fem::deleteObjInDb(self::getTable(), self::getKey(), $idLike);
-                $fem->getDb()->commit();
+            FEntityManagerSQL::getInstance()->getDb()->beginTransaction();
+            $queryResult = FEntityManagerSQL::getInstance()->retriveObj(self::getTable(), self::getKey(), $idLike);
+            if(FEntityManagerSQL::getInstance()->existInDb($queryResult) && FEntityManagerSQL::getInstance()->checkCreator($queryResult, $idUser)){
+                FEntityManagerSQL::getInstance()->deleteObjInDb(self::getTable(), self::getKey(), $idLike);
+                FEntityManagerSQL::getInstance()->getDb()->commit();
                 return true;
             }else{
-                $fem->getDb()->commit();
+                FEntityManagerSQL::getInstance()->getDb()->commit();
                 return false;
             }
         }catch(PDOException $e){
             echo "ERROR " . $e->getMessage();
-            $fem->getDb()->rollBack();
+            FEntityManagerSQL::getInstance()->getDb()->rollBack();
             return false;
         }finally{
-            $fem->closeConnection();
+            FEntityManagerSQL::getInstance()->closeConnection();
         }
     }
 }

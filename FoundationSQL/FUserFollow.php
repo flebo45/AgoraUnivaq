@@ -1,8 +1,6 @@
 <?php
 
-class FUserFollow extends FEntityManagerSQL{
-
-    private static $class = "FUserFollow";
+class FUserFollow{
     
     private static $table = "userfollow";
 
@@ -19,7 +17,7 @@ class FUserFollow extends FEntityManagerSQL{
     }
 
     public static function getClass(){
-        return self::$class;
+        return self::class;
     }
 
     public static function getKey(){
@@ -50,8 +48,7 @@ class FUserFollow extends FEntityManagerSQL{
     }
 
     public static function getObj($id){
-        $fem = FEntityManagerSQL::getInstance();
-        $result = $fem->retriveObj(self::getTable(), self::getKey(), $id);
+        $result = FEntityManagerSQL::getInstance()->retriveObj(self::getTable(), self::getKey(), $id);
         //var_dump($result);
         if(count($result) > 0){
             $userFollow = self::createUserFollowObj($result);
@@ -62,9 +59,7 @@ class FUserFollow extends FEntityManagerSQL{
     }
 
     public static function saveObj($obj){
-        $fem = FEntityManagerSQL::getInstance();
-
-        $saveUserFollow = $fem->saveObject(self::getClass(), $obj);
+        $saveUserFollow = FEntityManagerSQL::getInstance()->saveObject(self::getClass(), $obj);
         if($saveUserFollow !== null){
             return true;
         }else{
@@ -73,9 +68,7 @@ class FUserFollow extends FEntityManagerSQL{
     }
 
     public static function retriveUserFollow($idUser, $idFollowed){
-        $fem = FEntityManagerSQL::getInstance();
-
-        $queryResult = $fem::getObjOnAttributes(FUserFollow::getTable(), 'idFollower', $idUser, 'idFollowed', $idFollowed);
+        $queryResult = FEntityManagerSQL::getInstance()->getObjOnAttributes(FUserFollow::getTable(), 'idFollower', $idUser, 'idFollowed', $idFollowed);
         if(count($queryResult) > 0){
             return $queryResult[0][FUserFollow::getKey()];
         }else{
@@ -84,40 +77,34 @@ class FUserFollow extends FEntityManagerSQL{
     }
 
     public static function deleteUserFollowInDb($idUser, $idFollowed){
-        $fem = FEntityManagerSQL::getInstance();
-        
         try{
-            $fem->getDb()->beginTransaction();
+            FEntityManagerSQL::getInstance()->getDb()->beginTransaction();
             $idUserFollow = self::retriveUserFollow($idUser, $idFollowed);
             if($idUserFollow){
-                $fem::deleteObjInDb(self::getTable(), self::getKey(), $idUserFollow);
-                $fem->getDb()->commit();
+                FEntityManagerSQL::getInstance()->deleteObjInDb(self::getTable(), self::getKey(), $idUserFollow);
+                FEntityManagerSQL::getInstance()->getDb()->commit();
                 return true;
             }else{
-                $fem->getDb()->commit();
+                FEntityManagerSQL::getInstance()->getDb()->commit();
                 return false;
             }
         }catch(PDOException $e){
             echo "ERROR " . $e->getMessage();
-            $fem->getDb()->rollBack();
+            FEntityManagerSQL::getInstance()->getDb()->rollBack();
             return false;
         }finally{
-            $fem->closeConnection();
+            FEntityManagerSQL::getInstance()->closeConnection();
         }
     }
 
     public static function getFollowedNumb($idUser){
-        $fem = FEntityManagerSQL::getInstance();
-
-        $result = $fem::retriveObj(self::getTable(), 'idFollower', $idUser);
+        $result = FEntityManagerSQL::getInstance()->retriveObj(self::getTable(), 'idFollower', $idUser);
 
         return count($result);
     }
 
     public static function getFollowerNumb($idUser){
-        $fem = FEntityManagerSQL::getInstance();
-
-        $result = $fem::retriveObj(self::getTable(), 'idFollowed', $idUser);
+        $result = FEntityManagerSQL::getInstance()->retriveObj(self::getTable(), 'idFollowed', $idUser);
 
         return count($result);
     }
@@ -126,10 +113,9 @@ class FUserFollow extends FEntityManagerSQL{
      * return a list of the users who have the highest number of followers
      */
     public static function getTopUserFollower(){
-        $fem = FEntityManagerSQL::getInstance();
         try{
             $query = "SELECT uf.idFollowed, COUNT(uf.idFollowed) as followCount FROM ". self::getTable() . " uf GROUP BY uf.idFOllowed ORDER BY followCount DESC LIMIT ". MAX_VIP . ";";
-            $stmt = $fem->getDb()->prepare($query);
+            $stmt = FEntityManagerSQL::getInstance()->getDb()->prepare($query);
             $stmt->execute();
             $rowNum = $stmt->rowCount();
             if($rowNum > 0){
