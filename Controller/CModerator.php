@@ -18,25 +18,13 @@ class CModerator{
         if(USession::isSetSessionElement('mod')){
             $logged = true;
         }
-        return $logged;
-    }
-
-    
-    /**
-     * check the request, if the Mod have the session cookie(isLogged()) return the Mod in the home page, if not shw the login form 
-     * 
-     * @return void
-     */
-    public static function login()
-    {
-        if(self::isLogged()){
-            header('Location: /Agora/Moderator/reportList');
-        }else{
+        if(!$logged){
             $view = new VModerator();
             $view->showLoginForm();
-        }   
+            exit;
+        }
+        return true;
     }
-
     
     /**
      * check if exist the Username inserted, and for this username check the password. If is everything correct the session is created and
@@ -52,7 +40,7 @@ class CModerator{
                 if(USession::getSessionStatus() == PHP_SESSION_NONE){
                     USession::getInstance();
                     USession::setSessionElement('mod', $user->getId());
-                    header('Location: /Agora/Moderator/reportList');
+                    self::reportList();
                     }
                 }else{
                     $view->loginError();
@@ -72,18 +60,16 @@ class CModerator{
         USession::getInstance();
         USession::unsetSession();
         USession::destroySession();
-        header('Location: /Agora/Moderator/login');
+        $view = new VModerator();
+        $view->showLoginForm();
     }
 
     /**
      * Show the all reported post and comment 
      */
-    public static function reportList()
-    {
-        
+    public static function reportList(){  
         if(CModerator::isLogged()){
             $modId = USession::getInstance()->getSessionElement('mod');
-
             $mod = FPersistentManager::getInstance()->retriveObj(FModerator::getClass(), $modId);
 
             $reportedPost = FPersistentManager::getInstance()->getReportedPost();
@@ -92,8 +78,6 @@ class CModerator{
             $view = new VModerator();
 
             $view->showReportList($mod->getUsername(), $reportedPost,  $reportedComment);
-        }else{
-            header('Location: /Agora/Moderator/login');
         }
     }
 
@@ -108,10 +92,8 @@ class CModerator{
             if($user !== null){
                 $user->setBan(true);
                 FPersistentManager::getInstance()->updateUserBan($user);
-                header('Location: /Agora/Moderator/reportList');
+                self::reportList();
             }
-        }else{
-            header('Location: /Agora/Moderator/login');
         }
     }
 
@@ -136,10 +118,8 @@ class CModerator{
                     $user->setBan(true);
                     FPersistentManager::getInstance()->updateUserBan($user);
                 }
-                header('Location: /Agora/Moderator/reportList');
+                self::reportList();
             }
-        }else{
-            header('Location: /Agora/Moderator/login');
         }
     }
 
@@ -155,9 +135,7 @@ class CModerator{
                 FPersistentManager::getInstance()->updateCommentBan($comment);
                 FPersistentManager::getInstance()->deleteRelatedReports($idComment, 'idComment');
             }
-            header('Location: /Agora/Moderator/reportList');
-        }else{
-            header('Location: /Agora/Moderator/login');
+            self::reportList();
         }
     }
 
@@ -193,16 +171,13 @@ class CModerator{
      * With this method the Moderator ignore the Report, so it will be delated
      * @param int $id Refres to id of the report to delete
      */
-    public static function ignore($id)
-    {
+    public static function ignore($id){
         if(CModerator::isLogged()){
             $report = FPersistentManager::getInstance()->retriveObj(FReport::getClass(), $id);
             if($report !== null){
                 FPersistentManager::getInstance()->deleteRelatedReports($id);
             }
-            header('Location: /Agora/Moderator/reportList');
-        }else{
-            header('Location: /Agora/Moderator/login');
+            self::reportList();
         }
     }
 
@@ -214,8 +189,6 @@ class CModerator{
     {
 
         if(CModerator::isLogged()){
-            ;
-
             $modId = USession::getInstance()->getSessionElement('mod');
             $mod = FPersistentManager::getInstance()->retriveObj(FModerator::getClass(), $modId);
             $modUsername = $mod->getUsername();
@@ -232,11 +205,9 @@ class CModerator{
                 $view = new VModerator();
                 $view->visitUser($userAndPropic, $userPosts, $followerNumb, $followedNumb, $modUsername);
             }else{
-                header('Location: /Agora/Moderator/reportList');
+                self::reportList();
             }  
-        }else{
-            header('Location: /Agora/Moderator/login');
-        }        
+        }      
     }
 
     /**
@@ -257,11 +228,8 @@ class CModerator{
                 $view = new VModerator();
                 $view->visitPost($post, $userAndProPic, $modUsername);
             }else{
-                header('Location: /Agora/Moderator/reportList');
+                self::reportList();
             }
-        }else{
-            header('Location: /Agora/Moderator/login');
         }
     }
-
 }

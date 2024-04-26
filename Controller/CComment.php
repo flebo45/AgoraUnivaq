@@ -13,9 +13,7 @@ class CComment{
 
             $comment = new EComment(UHTTPMethods::post('body'), $user, $idPost);
             FPersistentManager::getInstance()->uploadObj($comment);
-            header('Location: /Agora/Post/visit/'. $idPost);
-        }else{
-            header('Location: /Agora/User/login');
+            CPost::visit($idPost);
         }
     }
 }

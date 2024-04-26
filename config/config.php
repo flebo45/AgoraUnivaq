@@ -1,7 +1,7 @@
 <?php
 
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'provainstall');
+define('DB_NAME', 'provatesi');
 define('DB_USER', 'root');
 define('DB_PASS', 'pippo');
 define('SQL_FILE_PATH', 'agora.sql');

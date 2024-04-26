@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2024-04-13 22:46:16
+/* Smarty version 3.1.33, created on 2024-04-26 19:35:19
   from 'C:\xampp\htdocs\Agora\Smarty\templates\visualization_post.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_661aef1855eea0_86264304',
+  'unifunc' => 'content_662be5d767dec3_80360382',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '189ae2eb4eea057283de011ec14e0a0bea92fdee' => 
     array (
       0 => 'C:\\xampp\\htdocs\\Agora\\Smarty\\templates\\visualization_post.tpl',
-      1 => 1713041164,
+      1 => 1713290319,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_661aef1855eea0_86264304 (Smarty_Internal_Template $_smarty_tpl) {
+function content_662be5d767dec3_80360382 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!DOCTYPE html>
 <?php $_smarty_tpl->_assignInScope('userlogged', (($tmp = @$_smarty_tpl->tpl_vars['userlogged']->value)===null||$tmp==='' ? 'nouser' : $tmp));?>
 <html lang="en">
@@ -287,7 +287,7 @@ foreach ($_from as $_smarty_tpl->tpl_vars['comment']->value) {
 </b>
                   </div>
                 </div>
-                <form id="report" action="/Agora/Comment/report/<?php echo $_smarty_tpl->tpl_vars['comment']->value[0]->getId();?>
+                <form id="report" action="/Agora/Report/reportComment/<?php echo $_smarty_tpl->tpl_vars['comment']->value[0]->getId();?>
 " method="post">
                       <button class="btn btn-transparent" id="delete"><i class="uil uil-exclamation-triangle" style="color:red"></i></button>
                 </form>
@@ -442,7 +442,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
 <div class="card">
     <h2>Report</h2>
     <h3 class="text-muted">Why are you reporting this post?</h3>
-    <form id="report"  action="/Agora/Post/report/<?php echo $_smarty_tpl->tpl_vars['post']->value->getId();?>
+    <form id="report"  action="/Agora/Report/reportPost/<?php echo $_smarty_tpl->tpl_vars['post']->value->getId();?>
 " method="post">
 
         <div class="report-checkbox">

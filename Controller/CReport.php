@@ -17,14 +17,11 @@ class CReport{
                 $report = new EReport('', 'linguaggio scurrile', $idUser);
                 $report->setComment($reportedComment);
                 FPersistentManager::getInstance()->uploadObj($report);
-                header('Location: /Agora/Post/visit/'. $reportedComment->getIdPost());
+                CPost::visit($reportedComment->getIdPost());
             }else{
-                header('Location: /Agora/User/home');
-            }
-            
-        }else{
-            header('Location: /Agora/User/login');
-        }    
+                CUser::home();
+            }     
+        }   
     }
 
     /**
@@ -41,12 +38,10 @@ class CReport{
                 $report = new EReport(UHTTPMethods::post('description'), UHTTPMethods::post('type'), $idUser);
                 $report->setPost($reportedPost[0]);
                 FPersistentManager::getInstance()->uploadObj($report);
-                header('Location: /Agora/Post/visit/'. $idPost);
+                CPost::visit($idPost);
             }else{
-                header('Location: /Agora/User/home');
+                CUser::home();
             }
-        }else{
-            header('Location: /Agora/User/login');
-        }    
+        }  
     }
 }

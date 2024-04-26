@@ -14,8 +14,6 @@ public static function postForm(){
 
         $view = new VManagePost();
         $view->showCreationForm($userAndPropic);
-    }else{
-        header('Location: /Agora/User/login');
     }
 }
 
@@ -43,16 +41,11 @@ public static function createPost(){
             $check = FPersistentManager::getInstance()->manageImages($uploadedImages, $post, $userId);
             if(!$check){
                 $view->uploadFileError($check);
-            }else{
-                header('Location: /Agora/User/personalProfile');
             }
-        }else{
-            header('Location: /Agora/User/personalProfile');
         }
-    }else{
-        header('Location: /Agora/User/login');
-        }
+        CUser::personalProfile();
     }
+}
 
 
 /**
@@ -87,7 +80,7 @@ public static function visit($idPost){
         $view->showPost($userAndPropic, $visitedUserAndPic, $post, $commentsAndUserPic, $numericInfo, $like,  $follow);
 
     }else{
-        header('Location: /Agora/User/home');
+        CUser::home();
     }
 }
 
@@ -95,15 +88,12 @@ public static function visit($idPost){
  * show the list of the Users who liked the Post
  * @param int $idPost Refers to the id of a post 
  */
-public static function like($idPost)
-{
+public static function like($idPost){
     if(CUser::isLogged()){
         $usersAndPropic = FPersistentManager::getInstance()->getLikesPage($idPost);
 
         $view = new VManagePost();
         $view->showUsersList($usersAndPropic, 'like');
-    }else{
-        header('Location: /Agora/User/login');
     }
 }
 
@@ -118,16 +108,11 @@ public static function delete($idPost)
 
         $post = FPersistentManager::getInstance()->getPostAndUser($idPost);
     
-
         //check if the Post exist
         if(count($post) > 0  && $idUser == $post[0]->getUser()->getId()){
             FPersistentManager::getInstance()->deletePost($idPost, $idUser);
-            header('Location: /Agora/User/personalProfile');
-        }else{
-            header('Location: /Agora/User/personalProfile');
-        }        
-    }else{
-        header('Location: /Agora/User/login');
+        }
+        CUser::personalProfile();
     }
 }
 
@@ -135,8 +120,7 @@ public static function delete($idPost)
  * this method is called when the User want to like the Post that is visualizing 
  * @param int $idPost Refers to the id of a post 
  */
-public static function settingLike($idPost)
-{
+public static function settingLike($idPost){
     if(CUser::isLogged()){
         $idUser = USession::getInstance()->getSessionElement('user');
 
@@ -146,9 +130,7 @@ public static function settingLike($idPost)
             $like = new ELike($idUser, $idPost);
             FPersistentManager::getInstance()->uploadObj($like);
         }
-        header('Location: /Agora/Post/visit/'.$idPost);
-    }else{
-        header('Location: /Agora/User/login');
+        self::visit($idPost);
     }
 }
 
@@ -156,8 +138,7 @@ public static function settingLike($idPost)
  * this method is called when the User want to delete teh like of the Post that is visualizing 
  * @param int $idPost Refers to the id of a post 
  */
-public static function deleteLike($idPost)
-{
+public static function deleteLike($idPost){
     if(CUser::isLogged()){
         $idUser = USession::getInstance()->getSessionElement('user');
             
@@ -167,10 +148,7 @@ public static function deleteLike($idPost)
         if(!is_array($like)){
             FPersistentManager::getInstance()->deleteLike($like->getId(), $idUser);
         }
-        header('Location: /Agora/Post/visit/'.$idPost);
-    }else{
-        header('Location: /Agora/User/login');
+        self::visit($idPost);
     }
 }
-
 }
