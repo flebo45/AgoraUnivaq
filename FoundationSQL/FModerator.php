@@ -59,7 +59,7 @@ class FModerator{
         $savePerson = FEntityManagerSQL::getInstance()->saveObject(FPerson::getClass(), $obj);
         //var_dump($savePerson);
         if($savePerson !== null){
-            $saveMod = FEntityManagerSQL::getInstance()->saveObjectFromId(self::getClass(), $savePerson);
+            $saveMod = FEntityManagerSQL::getInstance()->saveObjectFromId(self::getClass(), $obj, $savePerson);
             return $saveMod;
         }else{
             return false;

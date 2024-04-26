@@ -11,7 +11,7 @@ class CReport{
         if(CUser::isLogged()){
             $idUser = USession::getInstance()->getSessionElement('user');
 
-            $reportedComment = FPersistentManager::getInstance()->retriveObj(EComment::getEntity(), $idComment);
+            $reportedComment = FPersistentManager::getInstance()->retriveObj(FComment::getClass(), $idComment);
             if($reportedComment !== null){
                 //create a new Report Obj and persist it
                 $report = new EReport('', 'linguaggio scurrile', $idUser);
@@ -35,7 +35,7 @@ class CReport{
         if(CUser::isLogged()){
             $idUser = USession::getInstance()->getSessionElement('user');
 
-            $reportedPost = FPersistentManager::getInstance()->retriveObj(EPost::getEntity(), $idPost);
+            $reportedPost = FPersistentManager::getInstance()->retriveObj(FPost::getClass(), $idPost);
             if($reportedPost !== null){
                 //create a new Report Obj and persist it
                 $report = new EReport(UHTTPMethods::post('description'), UHTTPMethods::post('type'), $idUser);

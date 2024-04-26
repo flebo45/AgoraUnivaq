@@ -157,14 +157,11 @@ class FEntityManagerSQL{
     public static function saveObject($foundClass, $obj)
     {
         try{
-            self::$db->beginTransaction();
             $query = "INSERT INTO " . $foundClass::getTable() . " VALUES " . $foundClass::getValue();
             $stmt = self::$db->prepare($query);
             $foundClass::bind($stmt, $obj);
             $stmt->execute();
             $id = self::$db->lastInsertId();
-            self::$db->commit();
-            self::closeConnection();
             return $id;
         }catch(Exception $e){
             echo "ERROR: " . $e->getMessage();
@@ -178,21 +175,17 @@ class FEntityManagerSQL{
      * @param int $id Refers to an Entity Object id to save in the Database
      * @return bool
      */
-    public static function saveObjectFromId($foundClass, $id)
+    public static function saveObjectFromId($foundClass, $obj, $id)
     {
         try{
-            self::$db->beginTransaction();
             $query = "INSERT INTO " . $foundClass::getTable() . " VALUES " . $foundClass::getValue();
             $stmt = self::$db->prepare($query);
-            $foundClass::bind($stmt, $id);
+            $foundClass::bind($stmt,$obj, $id);
             //var_dump($stmt);
             $stmt->execute();
-            self::$db->commit();
-            self::closeConnection();
             return true;
         }catch(Exception $e){
             echo "ERROR: " . $e->getMessage();
-            self::$db->rollBack();
             return false;
         }
     }

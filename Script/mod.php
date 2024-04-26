@@ -7,6 +7,6 @@ $fem = FEntityManager::getInstance($em);
 
 $pm = FPersistentManager::getInstance();
 
-$mod = new EModerator('nome', 'cognome', 20, 'admin@admin', 'admin', 'mod123');
+$image = new EImage('default', 0, "image/png", "default");
 
-$pm::uploadObj($mod);
+$pm::uploadObj($image);

@@ -95,13 +95,25 @@ class FUser{
     //fieldArray è un array che deve contere array aventi nome del field e valore 
     public static function saveObj($obj, $fieldArray = null){
         if($fieldArray === null){
-            $savePerson = FEntityManagerSQL::getInstance()->saveObject(FPerson::getClass(), $obj);
-                if($savePerson !== null){
-                    $saveUser = FEntityManagerSQL::getInstance()->saveObjectFromId(self::getClass(), $obj, $savePerson);
-                    return $saveUser;
+            try{
+                FEntityManagerSQL::getInstance()->getDb()->beginTransaction();
+                $savePersonAndLastInsertedID = FEntityManagerSQL::getInstance()->saveObject(FPerson::getClass(), $obj);
+                if($savePersonAndLastInsertedID !== null){
+                    $saveUser = FEntityManagerSQL::getInstance()->saveObjectFromId(self::getClass(), $obj, $savePersonAndLastInsertedID);
+                    FEntityManagerSQL::getInstance()->getDb()->commit();
+                    if($saveUser){
+                        return $savePersonAndLastInsertedID;
+                    }
                 }else{
                     return false;
                 }
+            }catch(PDOException $e){
+                echo "ERROR " . $e->getMessage();
+                FEntityManagerSQL::getInstance()->getDb()->rollBack();
+                return false;
+            }finally{
+                FEntityManagerSQL::getInstance()->closeConnection();
+            }  
         }else{
             try{
                 FEntityManagerSQL::getInstance()->getDb()->beginTransaction();

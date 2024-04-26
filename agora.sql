@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Apr 03, 2024 alle 10:54
+-- Creato il: Apr 26, 2024 alle 18:32
 -- Versione del server: 10.4.27-MariaDB
 -- Versione PHP: 8.2.0
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `agora`
+-- Database: `Agora`
 --
 
 -- --------------------------------------------------------
@@ -51,6 +51,13 @@ CREATE TABLE `image` (
   `idPost` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Dump dei dati per la tabella `image`
+--
+
+INSERT INTO `image` (`idImage`, `name`, `size`, `types`, `imageData`, `idPost`) VALUES
+(1, 'default', 0, 'image/png', 0x64656661756c74, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -73,6 +80,13 @@ CREATE TABLE `moderator` (
   `idUser` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Dump dei dati per la tabella `moderator`
+--
+
+INSERT INTO `moderator` (`idUser`) VALUES
+(1);
+
 -- --------------------------------------------------------
 
 --
@@ -89,6 +103,13 @@ CREATE TABLE `person` (
   `username` varchar(255) NOT NULL,
   `discr` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dump dei dati per la tabella `person`
+--
+
+INSERT INTO `person` (`idUser`, `name`, `surname`, `year`, `email`, `password`, `username`, `discr`) VALUES
+(1, 'admin', 'admin', 18, 'admin@admin', '$2y$10$peb8Brv.9OIX6XBeBDElE.DmBZ9kWGSrbKAWBdc94A5QM0BAzEJ8a', 'admin', 'moderator');
 
 -- --------------------------------------------------------
 
@@ -229,7 +250,7 @@ ALTER TABLE `comment`
 -- AUTO_INCREMENT per la tabella `image`
 --
 ALTER TABLE `image`
-  MODIFY `idImage` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idImage` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT per la tabella `likes`
@@ -241,7 +262,7 @@ ALTER TABLE `likes`
 -- AUTO_INCREMENT per la tabella `person`
 --
 ALTER TABLE `person`
-  MODIFY `idUser` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idUser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT per la tabella `post`
